@@ -62,47 +62,47 @@
 
             <div class="mb-3">
                 <label for="name" class="form-label fw-semibold">Nama Lengkap</label>
-                <input 
-                    type="text" 
-                    name="name" 
-                    id="name" 
-                    class="form-control" 
+                <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    class="form-control"
                     placeholder="Masukkan nama lengkap"
-                    value="{{ old('name') }}" 
+                    value="{{ old('name') }}"
                     required>
             </div>
 
             <div class="mb-3">
                 <label for="email" class="form-label fw-semibold">Email</label>
-                <input 
-                    type="email" 
-                    name="email" 
-                    id="email" 
-                    class="form-control" 
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    class="form-control"
                     placeholder="Masukkan email"
-                    value="{{ old('email') }}" 
+                    value="{{ old('email') }}"
                     required>
             </div>
 
             <div class="mb-3">
                 <label for="password" class="form-label fw-semibold">Password</label>
-                <input 
-                    type="password" 
-                    name="password" 
-                    id="password" 
-                    class="form-control" 
-                    placeholder="Masukkan password" 
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    class="form-control"
+                    placeholder="Masukkan password"
                     required>
             </div>
 
             <div class="mb-3">
                 <label for="password_confirmation" class="form-label fw-semibold">Konfirmasi Password</label>
-                <input 
-                    type="password" 
-                    name="password_confirmation" 
-                    id="password_confirmation" 
-                    class="form-control" 
-                    placeholder="Ulangi password" 
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    id="password_confirmation"
+                    class="form-control"
+                    placeholder="Ulangi password"
                     required>
             </div>
 
