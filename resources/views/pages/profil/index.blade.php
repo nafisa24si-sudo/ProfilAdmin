@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
 @section('title', 'Profil Desa - Admin')
 @section('page_title', 'Profil Desa')

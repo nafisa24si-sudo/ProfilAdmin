@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
 @section('title', 'Dashboard')
 @section('page_title', 'Dashboard')
@@ -132,6 +132,11 @@
                             <i class="fas fa-plus me-2"></i>Tambah Berita
                         </a>
                     </div>
+                     <div class="col-md-3 mb-3">
+                        <a href="{{ route('berita.index') }}" class="btn btn-info w-100">
+                            <i class="fas fa-newspaper me-2"></i>User
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -237,18 +242,7 @@
 @endpush
 
 <!-- Floating WhatsApp Button -->
-<div class="whatsapp-float">
-    <a href="https://wa.me/6281234567890?text=Halo%2C%20saya%20membutuhkan%20bantuan%20tentang%20sistem%20desa"
-       target="_blank"
-       class="whatsapp-link"
-       id="whatsappFloat">
-        <i class="fab fa-whatsapp"></i>
-    </a>
 
-    <div class="whatsapp-tooltip">
-        Butuh Bantuan?
-    </div>
-</div>
 
 @push('scripts')
 <script>

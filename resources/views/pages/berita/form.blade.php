@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
 @section('title', isset($berita) ? 'Edit Berita' : 'Tambah Berita')
 @section('page_title', isset($berita) ? 'Edit Berita' : 'Tambah Berita')
@@ -6,7 +6,7 @@
 @section('content')
 <div class="card border-0 shadow-sm rounded-3">
     <div class="card-body">
-        <form action="{{ isset($berita) ? route('berita.update', $berita->id) : route('berita.store') }}" 
+        <form action="{{ isset($berita) ? route('berita.update', $berita->id) : route('berita.store') }}"
               method="POST" enctype="multipart/form-data">
             @csrf
             @if(isset($berita))
@@ -16,7 +16,7 @@
             {{-- Judul --}}
             <div class="mb-3">
                 <label for="judul" class="form-label fw-semibold">Judul Berita</label>
-                <input type="text" name="judul" id="judul" class="form-control" 
+                <input type="text" name="judul" id="judul" class="form-control"
                        value="{{ old('judul', $berita->judul ?? '') }}" required>
             </div>
 
@@ -26,7 +26,7 @@
                 <select name="kategori_id" id="kategori_id" class="form-select" required>
                     <option value="">-- Pilih Kategori --</option>
                     @foreach ($kategori as $item)
-                        <option value="{{ $item->id }}" 
+                        <option value="{{ $item->id }}"
                             {{ old('kategori_id', $berita->kategori_id ?? '') == $item->id ? 'selected' : '' }}>
                             {{ $item->nama }}
                         </option>
@@ -54,7 +54,7 @@
             {{-- Penulis --}}
             <div class="mb-3">
                 <label for="penulis" class="form-label fw-semibold">Penulis</label>
-                <input type="text" name="penulis" id="penulis" class="form-control" 
+                <input type="text" name="penulis" id="penulis" class="form-control"
                        value="{{ old('penulis', $berita->penulis ?? '') }}">
             </div>
 

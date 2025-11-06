@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProfilDesa;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class ProfilDesaController extends Controller
+class UserController extends Controller
 {
     public function index()
     {
-        $profil = ProfilDesa::first();
-        return view('pages.profil.index', compact('profil'));
+        $profil = User::first();
+        return view('pages.user.index', compact('user'));
     }
 
     public function create()
     {
-        return view('pages.profil.create');
+        return view('pages.user.create');
     }
 
     public function store(Request $request)
@@ -32,16 +32,16 @@ class ProfilDesaController extends Controller
         ]);
 
         // Hapus data lama agar hanya 1 profil
-        ProfilDesa::truncate();
-        ProfilDesa::create($validated);
+        User::truncate();
+        User::create($validated);
 
-        return redirect()->route('pages.profil.index')->with('success', 'Profil desa berhasil disimpan.');
+        return redirect()->route('pages.user.index')->with('success', 'user desa berhasil disimpan.');
     }
 
     public function edit($id)
     {
-        $profil = ProfilDesa::findOrFail($id);
-        return view('pages.profil.edit', compact('profil'));
+        $user = User::findOrFail($id);
+        return view('pages.user.edit', compact('user'));
     }
 
     public function update(Request $request, $id)
@@ -57,17 +57,17 @@ class ProfilDesaController extends Controller
             'peta_embed_url' => 'nullable|string',
         ]);
 
-        $profil = ProfilDesa::findOrFail($id);
+        $profil = User::findOrFail($id);
         $profil->update($validated);
 
-        return redirect()->route('pages.profil.index')->with('success', 'Profil desa berhasil diperbarui.');
+        return redirect()->route('pages.user.index')->with('success', 'user desa berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $profil = ProfilDesa::findOrFail($id);
-        $profil->delete();
+        $user = User::findOrFail($id);
+        $user->delete();
 
-        return redirect()->route('pages.profil.index')->with('success', 'Profil desa berhasil dihapus.');
+        return redirect()->route('pages.user.index')->with('success', 'user desa berhasil dihapus.');
     }
 }

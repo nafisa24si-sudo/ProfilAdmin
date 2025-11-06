@@ -14,7 +14,7 @@ class KategoriController extends Controller
     public function index()
     {
         $kategoris = Kategori::latest()->paginate(10);
-        return view('kategori.index', compact('kategoris'));
+        return view('pages.kategori.index', compact('kategoris'));
     }
 
     /**
@@ -22,7 +22,7 @@ class KategoriController extends Controller
      */
     public function create()
     {
-        return view('kategori.create');
+        return view('pages.kategori.create');
     }
 
     /**
@@ -42,7 +42,7 @@ class KategoriController extends Controller
         ]);
 
         return redirect()
-            ->route('kategori.index')
+            ->route('pages.kategori.index')
             ->with('success', 'Kategori berhasil ditambahkan.');
     }
 
@@ -51,7 +51,7 @@ class KategoriController extends Controller
      */
     public function edit(Kategori $kategori)
     {
-        return view('kategori.edit', compact('kategori'));
+        return view('pages.kategori.edit', compact('kategori'));
     }
 
     /**
@@ -71,7 +71,7 @@ class KategoriController extends Controller
         ]);
 
         return redirect()
-            ->route('kategori.index')
+            ->route('pages.kategori.index')
             ->with('success', 'Kategori berhasil diperbarui.');
     }
 
@@ -83,7 +83,7 @@ class KategoriController extends Controller
         $kategori->delete();
 
         return redirect()
-            ->route('kategori.index')
+            ->route('pages.kategori.index')
             ->with('success', 'Kategori berhasil dihapus.');
     }
 }

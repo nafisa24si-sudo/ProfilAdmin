@@ -1,38 +1,6 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi Akun</title>
-
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            background: linear-gradient(135deg, #4e73df, #1cc88a);
-            height: 100vh;
-        }
-        .card {
-            border: none;
-            border-radius: 15px;
-        }
-        .form-control:focus {
-            box-shadow: none;
-            border-color: #4e73df;
-        }
-        .btn-primary {
-            background-color: #4e73df;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #375ac1;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container d-flex align-items-center justify-content-center min-vh-100">
+@extends('layouts.auth.app')
+@section('content')
+<div class="login-right ">
     <div class="card shadow-lg p-4" style="width: 420px;">
         <div class="text-center mb-4">
             <h3 class="fw-bold text-primary">Buat Akun Anda</h3>
@@ -119,8 +87,4 @@
         </p>
     </div>
 </div>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+@endsection

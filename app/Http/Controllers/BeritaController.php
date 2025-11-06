@@ -15,7 +15,7 @@ class BeritaController extends Controller
     {
         // Gunakan paginate agar bisa pakai $berita->links() di Blade
         $berita = Berita::with('kategori')->latest()->paginate(10);
-        return view('berita.index', compact('berita'));
+        return view('pages.berita.index', compact('berita'));
     }
 
     /**
@@ -24,7 +24,7 @@ class BeritaController extends Controller
     public function create()
     {
         $kategori = Kategori::all();
-        return view('berita.create', compact('kategori'));
+        return view('pages.berita.create', compact('kategori'));
     }
 
     /**
@@ -45,7 +45,7 @@ class BeritaController extends Controller
         Berita::create($validated);
 
         return redirect()
-            ->route('berita.index')
+            ->route('pages.berita.index')
             ->with('success', 'Berita berhasil ditambahkan.');
     }
 
@@ -55,7 +55,7 @@ class BeritaController extends Controller
     public function edit(Berita $berita)
     {
         $kategori = Kategori::all();
-        return view('berita.form', compact('berita', 'kategori'));
+        return view('pages.berita.form', compact('berita', 'kategori'));
     }
 
     /**
@@ -76,7 +76,7 @@ class BeritaController extends Controller
         $berita->update($validated);
 
         return redirect()
-            ->route('berita.index')
+            ->route('pages.berita.index')
             ->with('success', 'Berita berhasil diperbarui.');
     }
 

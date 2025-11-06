@@ -1,8 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
-@section('title', 'Edit Kategori')
-@section('page_title', 'Edit Kategori')
-@section('page_subtitle', 'Perbarui informasi kategori yang sudah ada.')
+@section('title', 'Edit User')
+@section('page_title', 'Edit User')
+@section('page_subtitle', 'Perbarui informasi User yang sudah ada.')
 
 @section('content')
 <div class="row justify-content-center">
@@ -13,7 +13,7 @@
                     <i class="bi bi-pencil-square me-2"></i> Edit Kategori
                 </h4>
 
-                <form action="{{ route('kategori.update', $kategori->id) }}" method="POST">
+                <form action="{{ route('User.update', $kategori->id) }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -43,4 +43,3 @@
     </div>
 </div>
 @endsection
-    
