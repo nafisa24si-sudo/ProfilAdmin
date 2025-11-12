@@ -35,7 +35,7 @@ class ProfilDesaController extends Controller
         ProfilDesa::truncate();
         ProfilDesa::create($validated);
 
-        return redirect()->route('pages.profil.index')->with('success', 'Profil desa berhasil disimpan.');
+        return redirect()->route('profil.index')->with('success', 'Profil desa berhasil disimpan.');
     }
 
     public function edit($id)

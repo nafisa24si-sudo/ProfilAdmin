@@ -5,7 +5,7 @@
         <div class="login-right">
             <!-- Logo kecil di form login -->
             <div class="text-center mb-4">
-                <img src="https://via.placeholder.com/80x80/4e73df/ffffff?text=DS" alt="Logo" class="logo" style="max-width: 60px;">
+                <img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fgiriemas-buleleng.desa.id%2Findex.php%2Ffirst%2Fartikel%2F112-MAKNA-DARI-LAMBANG-BUMDES-LABDAJAYA-DESA-GIRI-EMAS&psig=AOvVaw2K5NrFdC9G2B3JH5kB3oBC&ust=1762962589804000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCKDox8e56pADFQAAAAAdAAAAABAT" alt="Logo" class="logo" style="max-width: 60px;">
             </div>
 
             <h2 class="signin-title">

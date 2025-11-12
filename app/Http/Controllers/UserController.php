@@ -9,65 +9,64 @@ class UserController extends Controller
 {
     public function index()
     {
-        $profil = User::first();
-        return view('pages.user.index', compact('user'));
+        $users = User::orderBy('nama_lengkap')->paginate(10);
+        
+        // Gunakan view di folder pages (tanpa auth)
+        return view('pages.user.index', compact('users'));
     }
 
     public function create()
     {
+        // Gunakan view di folder pages (tanpa auth)
         return view('pages.user.create');
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_desa' => 'required|string|max:255',
-            'telepon' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'alamat' => 'nullable|string|max:255',
-            'sejarah_singkat' => 'nullable|string',
-            'visi' => 'nullable|string',
-            'misi' => 'nullable|string',
-            'peta_embed_url' => 'nullable|string',
+            'username' => 'required|string|max:50|unique:users',
+            'nama_lengkap' => 'required|string|max:100',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|string|min:6|confirmed',
+            'role' => 'required|in:admin,user,warga'
         ]);
 
-        // Hapus data lama agar hanya 1 profil
-        User::truncate();
+        $validated['password'] = bcrypt($validated['password']);
         User::create($validated);
 
-        return redirect()->route('pages.user.index')->with('success', 'user desa berhasil disimpan.');
+        return redirect()->route('pages.user.index')
+            ->with('success', 'User berhasil ditambahkan!');
     }
 
-    public function edit($id)
+    public function show(User $user)
     {
-        $user = User::findOrFail($id);
-        return view('pages.user.edit', compact('user'));
+        return view('pages.user-show', compact('user'));
     }
 
-    public function update(Request $request, $id)
+    public function edit(User $user)
+    {
+        return view('pages.user-edit', compact('user'));
+    }
+
+    public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'nama_desa' => 'required|string|max:255',
-            'telepon' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'alamat' => 'nullable|string|max:255',
-            'sejarah_singkat' => 'nullable|string',
-            'visi' => 'nullable|string',
-            'misi' => 'nullable|string',
-            'peta_embed_url' => 'nullable|string',
+            'username' => 'required|string|max:50|unique:users,username,' . $user->id,
+            'nama_lengkap' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role' => 'required|in:admin,user,warga'
         ]);
 
-        $profil = User::findOrFail($id);
-        $profil->update($validated);
+        $user->update($validated);
 
-        return redirect()->route('pages.user.index')->with('success', 'user desa berhasil diperbarui.');
+        return redirect()->route('pages.user.index')
+            ->with('success', 'User berhasil diperbarui!');
     }
 
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        $user = User::findOrFail($id);
         $user->delete();
-
-        return redirect()->route('pages.user.index')->with('success', 'user desa berhasil dihapus.');
+        return redirect()->route('user.index')
+            ->with('success', 'User berhasil dihapus!');
     }
 }

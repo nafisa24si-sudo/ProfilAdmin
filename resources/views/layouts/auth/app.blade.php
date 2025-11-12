@@ -9,26 +9,28 @@
 
 
     {{-- Start CSS --}}
-    @include('layouts.auth.css');
+    @include('layouts.auth.css')
     {{-- End CSs --}}
 </head>
 <body>
     <!-- Floating WhatsApp Button -->
-    @include('layouts.auth.footer');
+    @include('layouts.auth.footer')
 
     <div class="login-container">
         <!-- Panel Kiri -->
         <div class="login-left">
             <!-- Logo dan Brand -->
             <div class="logo-container">
-                <img src="https://via.placeholder.com/120x120/4e73df/ffffff?text=LOGO" alt="Logo Desa" class="logo">
+                <img src="{{ asset('images/logo_desa.png') }}" alt="Logo Desa" class="logo">
                 <div class="brand-name">DESA MANDIRI</div>
                 <div class="brand-tagline">Membangun Desa Digital</div>
             </div>
 
-            <!-- Gambar Ilustrasi -->
+            <!-- Gambar Ilustrasi (sekarang sebagai background agar foto bisa menutupi area) -->
             <div class="text-center">
-                <img src="https://via.placeholder.com/300x200/ffffff/4e73df?text=ILUSTRASI" alt="Ilustrasi Desa Digital" class="feature-image">
+                <div class="feature-image" style="background-image: url('{{ asset('images/ilustrasi_bg.jpg') }}'); background-size: cover; background-position: center; height: 300px;
+                    border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: block;">
+                </div>
             </div>
 
             <h1 class="welcome-title">Selamat Datang!</h1>
@@ -58,6 +60,6 @@
     </div>
 
     <!-- Bootstrap JS -->
-    @include('layouts.auth.js');
+    @include('layouts.auth.js')
 </body>
 </html>

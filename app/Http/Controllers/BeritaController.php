@@ -45,7 +45,7 @@ class BeritaController extends Controller
         Berita::create($validated);
 
         return redirect()
-            ->route('pages.berita.index')
+            ->route('berita.index')
             ->with('success', 'Berita berhasil ditambahkan.');
     }
 
@@ -76,7 +76,7 @@ class BeritaController extends Controller
         $berita->update($validated);
 
         return redirect()
-            ->route('pages.berita.index')
+            ->route('berita.index')
             ->with('success', 'Berita berhasil diperbarui.');
     }
 
