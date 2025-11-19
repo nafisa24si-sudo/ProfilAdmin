@@ -6,7 +6,9 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h4 class="fw-bold mb-1 text-primary"><i class="bi bi-newspaper me-2"></i>Daftar Berita</h4>
+        <h4 class="fw-bold mb-1 text-primary">
+            <i class="bi bi-newspaper me-2"></i>Daftar Berita
+        </h4>
         <p class="text-muted small mb-0">Kelola semua berita yang telah dibuat di sistem</p>
     </div>
     <a href="{{ route('berita.create') }}" class="btn btn-primary shadow-sm px-3 py-2">
@@ -28,14 +30,19 @@
                     <th class="text-center" style="width: 120px;">Aksi</th>
                 </tr>
             </thead>
+
             <tbody>
                 @forelse ($berita as $item)
                     <tr class="border-bottom">
+
                         {{-- Cover --}}
                         <td>
-                            @if($item->cover)
-                                <img src="{{ asset('storage/' . $item->cover) }}" alt="cover" width="70" height="50"
-                                    class="rounded border shadow-sm hover-zoom">
+                            @if ($item->cover)
+                                <img src="{{ asset('storage/' . $item->cover) }}"
+                                     alt="cover"
+                                     width="70"
+                                     height="50"
+                                     class="rounded border shadow-sm hover-zoom">
                             @else
                                 <span class="text-muted small fst-italic">Tidak ada</span>
                             @endif
@@ -68,18 +75,36 @@
                         {{-- Aksi --}}
                         <td class="text-center">
                             <div class="d-flex justify-content-center gap-2">
-                                <a href="{{ route('berita.edit', $item->id) }}" class="btn btn-sm btn-warning shadow-sm" data-bs-toggle="tooltip" title="Edit Berita">
+
+                                {{-- Edit --}}
+                                <a href="{{ route('berita.edit', $item->id) }}"
+                                   class="btn btn-sm btn-warning shadow-sm"
+                                   data-bs-toggle="tooltip"
+                                   title="Edit Berita">
                                     <i class="bi bi-pencil"></i>
                                 </a>
-                                <form action="{{ route('berita.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus berita ini?')">
+
+                                {{-- Delete --}}
+                                <form action="{{ route('berita.destroy', $item->id) }}"
+                                      method="POST"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Yakin hapus berita ini?')">
+
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger shadow-sm" data-bs-toggle="tooltip" title="Hapus Berita">
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-danger shadow-sm"
+                                            data-bs-toggle="tooltip"
+                                            title="Hapus Berita">
                                         <i class="bi bi-trash"></i>
                                     </button>
+
                                 </form>
+
                             </div>
                         </td>
+
                     </tr>
                 @empty
                     <tr>
@@ -93,35 +118,21 @@
     </div>
 </div>
 
-{{-- Optional: Pagination --}}
+{{-- Tombol Slide Halaman (Pagination) --}}
 @if(method_exists($berita, 'links'))
-<div class="mt-4 d-flex justify-content-end">
-    {{ $berita->links() }}
+<div class="mt-4 d-flex justify-content-between align-items-center">
+
+    {{-- Info halaman --}}
+    <div class="small text-muted">
+        Halaman {{ $berita->currentPage() }} dari {{ $berita->lastPage() }}
+    </div>
+
+    {{-- Tombol pagination --}}
+    <div>
+        {{ $berita->links('pagination::bootstrap-5') }}
+    </div>
+
 </div>
 @endif
 
-{{-- Style tambahan --}}
-<style>
-    .hover-zoom {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .hover-zoom:hover {
-        transform: scale(1.05);
-        box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-    }
-    .hover-primary:hover {
-        color: #0d6efd !important;
-    }
-    .table td, .table th {
-        vertical-align: middle;
-    }
-</style>
-
-{{-- Tooltip Bootstrap --}}
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        tooltipTriggerList.map(el => new bootstrap.Tooltip(el))
-    });
-</script>
 @endsection

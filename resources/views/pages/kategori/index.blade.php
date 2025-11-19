@@ -71,17 +71,14 @@
                     </div>
 
                     {{-- Pagination --}}
-                    <div class="mt-3">
-                        {{ $kategoris->links() }}
+                    <div class="mt-4 d-flex justify-content-between align-items-center">
+                        <div class="small text-muted">
+                            Halaman {{ $kategoris->currentPage() }} dari {{ $kategoris->lastPage() }}
+                        </div>
+
+                        {{ $kategoris->links('pagination::bootstrap-5') }}
                     </div>
-                @else
-                    <div class="text-center text-muted py-5">
-                        <i class="bi bi-info-circle display-6 d-block mb-2"></i>
-                        <p class="mb-3">Belum ada kategori yang ditambahkan.</p>
-                        <a href="{{ route('kategori.create') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-lg me-1"></i> Tambah Kategori
-                        </a>
-                    </div>
+
                 @endif
             </div>
         </div>
