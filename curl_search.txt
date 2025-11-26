@@ -1,0 +1,1226 @@
+HTTP/1.1 200 OK
+Host: 127.0.0.1:8000
+Connection: close
+X-Powered-By: PHP/8.2.23
+Content-Type: text/html; charset=UTF-8
+Cache-Control: no-cache, private
+Date: Wed, 26 Nov 2025 12:15:29 GMT
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IlhPNUJxTzVKVTl3SE0yaHoyVWRhNmc9PSIsInZhbHVlIjoiNUdacm9XNEJqS0tzSVMrcGxQVG1EMXF6Q0NwQXBwbEEyeWVtM2pkOGZqSGpFeWt0N0dad2RMWXk4Z2NldkpKeEwrSTZ5VHAxSS9EZ1FEUGVybUdidUxQZkR6U1h4UjNyVTJ2eWNXRWZEclB2SkMrV0pSUlNZYmpOT2NxRWxlZFciLCJtYWMiOiI3ZmY2MzRhMzBkOWU1NjQ2NmQ5NDQ4NWM2NDkzZjdmZDFmYzkxZDRhYjExNzBiY2EzZDA0YjBiYmU4YjI3ZmZkIiwidGFnIjoiIn0%3D; expires=Wed, 26 Nov 2025 14:15:29 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: laravel-session=eyJpdiI6ImVUdXU1MTBvd2dpNkxIYzJ4WUJpcXc9PSIsInZhbHVlIjoic0Y1bnJrRWU5NmV2R3lUK2dBZkRkR2FKK3VmT09URkZKM2ZUMnN4clVBaGRYTnlJUlN1a2krd1Q1U2ExS21MZ2pFeGc4WEVxRTd0a2tOb3c5U0trM0ZOWVFhNU1QdTlpTXExOWtzNXRJTS80RXhPamRNK3p0anZUaFA5YmtVY3oiLCJtYWMiOiJkMDM5NDI5MmYzMTM5OGRlYjM5ZDM1MDhlZGRjNGI0MmEwNjY3OWVjMDI2MTI1YjM0ZGEwMjkwYjY2MjUzZGVmIiwidGFnIjoiIn0%3D; expires=Wed, 26 Nov 2025 14:15:29 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Daftar Berita</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="http://127.0.0.1:8000/assets/img/favicon/favicon-32x32.png">
+
+    <!-- Bootstrap + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- Summernote (WYSIWYG Editor) -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-light: #818cf8;
+        --secondary: #7c3aed;
+        --bg-light: #f9fafb;
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+    }
+
+    body {
+        background-color: var(--bg-light);
+        font-family: 'Inter', system-ui, sans-serif;
+        overflow-x: hidden;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+        background: linear-gradient(180deg, var(--primary), var(--secondary));
+        width: 270px;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding: 2rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.3s ease;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    .sidebar.hide {
+        transform: translateX(-100%);
+    }
+
+    .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 3rem;
+        text-decoration: none;
+    }
+
+    .sidebar-brand-icon {
+        background: white;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--primary);
+        font-size: 1.4rem;
+    }
+
+    .sidebar-brand-text {
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .nav-link {
+        color: rgba(255, 255, 255, 0.85);
+        padding: 0.8rem 1rem;
+        border-radius: 10px;
+        margin-bottom: 0.4rem;
+        transition: all 0.25s ease;
+    }
+
+    .nav-link:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        transform: translateX(5px);
+    }
+
+    .nav-link.active {
+        background: white;
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    .sidebar-section-title {
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        margin: 1.2rem 0 0.4rem 0.6rem;
+    }
+
+    .btn-logout {
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        border: none;
+        padding: 0.9rem;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-logout:hover {
+        background: #ef4444;
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    /* ===== TOP NAVBAR ===== */
+    .top-navbar {
+        margin-left: 270px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .top-navbar .page-title {
+        font-weight: 700;
+        color: var(--text-dark);
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+        border-radius: 50%;
+        color: white;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+        margin-left: 270px;
+        padding: 2rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+        margin-left: 270px;
+        background: white;
+        border-top: 1px solid var(--border);
+        padding: 1.5rem 2rem;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    /* ===== SUMMERNOTE CUSTOM ===== */
+    .note-editor.note-frame {
+        border: 1px solid #dee2e6;
+        border-radius: 0.375rem;
+    }
+
+    .note-toolbar {
+        background-color: #f8f9fa !important;
+        border-bottom: 1px solid #dee2e6 !important;
+    }
+
+    /* ===== MOBILE VIEW ===== */
+    .mobile-toggle {
+        display: none;
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: var(--primary);
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 55px;
+        height: 55px;
+        font-size: 1.6rem;
+        z-index: 1100;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    @media (max-width: 992px) {
+        .sidebar {
+            transform: translateX(-100%);
+        }
+
+        .top-navbar,
+        .main-content,
+        footer {
+            margin-left: 0 !important;
+        }
+
+        .mobile-toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+</style>
+
+    </head>
+
+<body>
+    <!-- MOBILE TOGGLE BUTTON -->
+    <button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('hide')">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div>
+            <a href="http://127.0.0.1:8000/dashboard" class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <i class="bi bi-newspaper"></i>
+                </div>
+                <span class="sidebar-brand-text">Bina Desa</span>
+            </a>
+
+            <nav class="nav flex-column">
+                <span class="sidebar-section-title">Navigasi Utama</span>
+
+                <a href="http://127.0.0.1:8000/dashboard" class="nav-link ">
+                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                </a>
+
+                <a href="http://127.0.0.1:8000/profil" class="nav-link ">
+                    <i class="bi bi-building me-2"></i> Profil Desa
+                </a>
+
+                <a href="http://127.0.0.1:8000/kategori" class="nav-link ">
+                    <i class="bi bi-tags me-2"></i> Kategori Berita
+                </a>
+
+                <a href="http://127.0.0.1:8000/berita" class="nav-link active">
+                    <i class="bi bi-newspaper me-2"></i> Berita
+                </a>
+
+                <a href="http://127.0.0.1:8000/warga" class="nav-link ">
+                    <i class="bi bi-tags me-2"></i> Warga
+                </a>
+
+                <a href="http://127.0.0.1:8000/user" class="nav-link ">
+                    <i class="bi bi-tags me-2"></i> User
+                </a>
+            </nav>
+        </div>
+
+        <form action="http://127.0.0.1:8000/logout" method="POST" class="mt-4">
+            <input type="hidden" name="_token" value="6Wvs6r1hIaJwTRpaVRN7z6Z5qDHUqJR9QwfC5oDz" autocomplete="off">            <button type="submit" class="btn-logout w-100">
+                <i class="bi bi-box-arrow-right me-2"></i> Keluar
+            </button>
+        </form>
+    </aside>
+;
+
+    <!-- TOP NAVBAR -->
+    <nav class="top-navbar">
+        <h5 class="page-title">Daftar Berita</h5>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-decoration-none" data-bs-toggle="dropdown">
+                <div class="user-avatar me-2">
+                    A
+                </div>
+                <span class="text-muted">Admin</span>
+                <i class="bi bi-chevron-down ms-2 text-muted"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                <li><a class="dropdown-item" href="http://127.0.0.1:8000/dashboard"><i class="bi bi-house-door me-2"></i> Dashboard</a></li>
+                <li><a class="dropdown-item" href="http://127.0.0.1:8000/profil"><i class="bi bi-person me-2"></i> Profil Saya</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form action="http://127.0.0.1:8000/logout" method="POST" class="m-0">
+                        <input type="hidden" name="_token" value="6Wvs6r1hIaJwTRpaVRN7z6Z5qDHUqJR9QwfC5oDz" autocomplete="off">                        <button type="submit" class="dropdown-item text-danger">
+                            <i class="bi bi-box-arrow-right me-2"></i> Keluar
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+;
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1 text-primary">
+            <i class="bi bi-newspaper me-2"></i>Daftar Berita
+        </h4>
+        <p class="text-muted small mb-0">Kelola semua berita yang telah dibuat di sistem</p>
+    </div>
+    <a href="http://127.0.0.1:8000/berita/create" class="btn btn-primary shadow-sm px-3 py-2">
+        <i class="bi bi-plus-lg me-1"></i> Tambah Berita
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+    <div class="card-body p-0">
+        
+        <form method="GET" action="http://127.0.0.1:8000/berita" onchange="this.form.submit()" class="p-3 border-bottom bg-light">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <label class="form-label small text-muted mb-1">Filter Kategori</label>
+                    <select name="kategori_id" class="form-select">
+                        <option value="">All Categories</option>
+                                                    <option value="1" >
+                                Pengumuman
+                            </option>
+                                                    <option value="2" >
+                                Kegiatan
+                            </option>
+                                                    <option value="3" >
+                                Pembangunan
+                            </option>
+                                                    <option value="4" >
+                                Sosial
+                            </option>
+                                                    <option value="5" >
+                                Pendidikan
+                            </option>
+                                            </select>
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label small text-muted mb-1">Filter Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="draft" >Draft</option>
+                        <option value="published" >Published</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-3">
+                    <label class="form-label small text-muted mb-1">Filter Penulis</label>
+                    <select name="penulis" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Authors</option>
+                                                    <option value="Aisyah Mala Suryatmi M.Kom." >
+                                Aisyah Mala Suryatmi M.Kom.
+                            </option>
+                                                    <option value="Ajeng Almira Safitri S.T." >
+                                Ajeng Almira Safitri S.T.
+                            </option>
+                                                    <option value="Ajeng Intan Riyanti" >
+                                Ajeng Intan Riyanti
+                            </option>
+                                                    <option value="Alambana Kuswoyo S.IP" >
+                                Alambana Kuswoyo S.IP
+                            </option>
+                                                    <option value="Alika Maida Zulaika S.IP" >
+                                Alika Maida Zulaika S.IP
+                            </option>
+                                                    <option value="Ami Pertiwi" >
+                                Ami Pertiwi
+                            </option>
+                                                    <option value="Atmaja Kasim Wibowo" >
+                                Atmaja Kasim Wibowo
+                            </option>
+                                                    <option value="Ayu Samiah Widiastuti" >
+                                Ayu Samiah Widiastuti
+                            </option>
+                                                    <option value="Balangga Ega Dabukke" >
+                                Balangga Ega Dabukke
+                            </option>
+                                                    <option value="Balijan Mahendra" >
+                                Balijan Mahendra
+                            </option>
+                                                    <option value="Banawi Upik Januar" >
+                                Banawi Upik Januar
+                            </option>
+                                                    <option value="Bella Namaga" >
+                                Bella Namaga
+                            </option>
+                                                    <option value="Betania Uyainah" >
+                                Betania Uyainah
+                            </option>
+                                                    <option value="Cemplunk Hakim" >
+                                Cemplunk Hakim
+                            </option>
+                                                    <option value="Ciaobella Laila Permata" >
+                                Ciaobella Laila Permata
+                            </option>
+                                                    <option value="Cici Umi Purwanti" >
+                                Cici Umi Purwanti
+                            </option>
+                                                    <option value="Danang Narpati S.Gz" >
+                                Danang Narpati S.Gz
+                            </option>
+                                                    <option value="Dasa Pangestu Maheswara" >
+                                Dasa Pangestu Maheswara
+                            </option>
+                                                    <option value="Devi Nurdiyanti S.T." >
+                                Devi Nurdiyanti S.T.
+                            </option>
+                                                    <option value="Devi Prastuti" >
+                                Devi Prastuti
+                            </option>
+                                                    <option value="Dewi Pudjiastuti S.Farm" >
+                                Dewi Pudjiastuti S.Farm
+                            </option>
+                                                    <option value="Dian Pratiwi" >
+                                Dian Pratiwi
+                            </option>
+                                                    <option value="Dimas Habibi S.Sos" >
+                                Dimas Habibi S.Sos
+                            </option>
+                                                    <option value="Dirja Harjasa Pradana" >
+                                Dirja Harjasa Pradana
+                            </option>
+                                                    <option value="Emil Hardiansyah" >
+                                Emil Hardiansyah
+                            </option>
+                                                    <option value="Fathonah Oktaviani" >
+                                Fathonah Oktaviani
+                            </option>
+                                                    <option value="Gadang Ganda Thamrin S.H." >
+                                Gadang Ganda Thamrin S.H.
+                            </option>
+                                                    <option value="Gadang Raden Siregar S.IP" >
+                                Gadang Raden Siregar S.IP
+                            </option>
+                                                    <option value="Gading Wasita" >
+                                Gading Wasita
+                            </option>
+                                                    <option value="Galih Budiyanto S.Farm" >
+                                Galih Budiyanto S.Farm
+                            </option>
+                                                    <option value="Galih Najib Prasasta" >
+                                Galih Najib Prasasta
+                            </option>
+                                                    <option value="Galur Putu Winarno" >
+                                Galur Putu Winarno
+                            </option>
+                                                    <option value="Gamani Hakim" >
+                                Gamani Hakim
+                            </option>
+                                                    <option value="Gambira Hidayanto" >
+                                Gambira Hidayanto
+                            </option>
+                                                    <option value="Gandi Mangunsong" >
+                                Gandi Mangunsong
+                            </option>
+                                                    <option value="Ganep Prayoga S.Pd" >
+                                Ganep Prayoga S.Pd
+                            </option>
+                                                    <option value="Gawati Halimah" >
+                                Gawati Halimah
+                            </option>
+                                                    <option value="Gawati Kania Rahmawati" >
+                                Gawati Kania Rahmawati
+                            </option>
+                                                    <option value="Gawati Suci Uyainah" >
+                                Gawati Suci Uyainah
+                            </option>
+                                                    <option value="Gawati Yuliarti" >
+                                Gawati Yuliarti
+                            </option>
+                                                    <option value="Gilda Cinta Kusmawati" >
+                                Gilda Cinta Kusmawati
+                            </option>
+                                                    <option value="Hamima Icha Kusmawati" >
+                                Hamima Icha Kusmawati
+                            </option>
+                                                    <option value="Hamima Mayasari" >
+                                Hamima Mayasari
+                            </option>
+                                                    <option value="Hamzah Nainggolan" >
+                                Hamzah Nainggolan
+                            </option>
+                                                    <option value="Harjo Tarihoran S.Farm" >
+                                Harjo Tarihoran S.Farm
+                            </option>
+                                                    <option value="Hasim Mandala S.Gz" >
+                                Hasim Mandala S.Gz
+                            </option>
+                                                    <option value="Hendri Capa Kuswoyo" >
+                                Hendri Capa Kuswoyo
+                            </option>
+                                                    <option value="Humaira Yuliarti" >
+                                Humaira Yuliarti
+                            </option>
+                                                    <option value="Ibrani Ibrahim Nugroho" >
+                                Ibrani Ibrahim Nugroho
+                            </option>
+                                                    <option value="Ibrani Uwais" >
+                                Ibrani Uwais
+                            </option>
+                                                    <option value="Ida Rahimah S.Ked" >
+                                Ida Rahimah S.Ked
+                            </option>
+                                                    <option value="Ifa Melani S.E." >
+                                Ifa Melani S.E.
+                            </option>
+                                                    <option value="Indah Nadia Nasyiah M.Ak" >
+                                Indah Nadia Nasyiah M.Ak
+                            </option>
+                                                    <option value="Irma Uyainah" >
+                                Irma Uyainah
+                            </option>
+                                                    <option value="Jane Vera Hartati M.Kom." >
+                                Jane Vera Hartati M.Kom.
+                            </option>
+                                                    <option value="Jelita Kuswandari" >
+                                Jelita Kuswandari
+                            </option>
+                                                    <option value="Jindra Sihombing" >
+                                Jindra Sihombing
+                            </option>
+                                                    <option value="Johan Gunawan" >
+                                Johan Gunawan
+                            </option>
+                                                    <option value="Jumari Dipa Samosir S.E." >
+                                Jumari Dipa Samosir S.E.
+                            </option>
+                                                    <option value="Kacung Kusumo S.Sos" >
+                                Kacung Kusumo S.Sos
+                            </option>
+                                                    <option value="Kacung Prayoga" >
+                                Kacung Prayoga
+                            </option>
+                                                    <option value="Kamila Suci Utami S.T." >
+                                Kamila Suci Utami S.T.
+                            </option>
+                                                    <option value="Karma Mahendra" >
+                                Karma Mahendra
+                            </option>
+                                                    <option value="Karsana Ardianto" >
+                                Karsana Ardianto
+                            </option>
+                                                    <option value="Karsana Waskita" >
+                                Karsana Waskita
+                            </option>
+                                                    <option value="Kartika Alika Haryanti M.M." >
+                                Kartika Alika Haryanti M.M.
+                            </option>
+                                                    <option value="Kasiyah Haryanti" >
+                                Kasiyah Haryanti
+                            </option>
+                                                    <option value="Keisha Ayu Handayani" >
+                                Keisha Ayu Handayani
+                            </option>
+                                                    <option value="Kezia Farida" >
+                                Kezia Farida
+                            </option>
+                                                    <option value="Labuh Prakasa" >
+                                Labuh Prakasa
+                            </option>
+                                                    <option value="Laras Belinda Oktaviani" >
+                                Laras Belinda Oktaviani
+                            </option>
+                                                    <option value="Luhung Anggriawan S.H." >
+                                Luhung Anggriawan S.H.
+                            </option>
+                                                    <option value="Luwar Mahendra" >
+                                Luwar Mahendra
+                            </option>
+                                                    <option value="Maida Laksita" >
+                                Maida Laksita
+                            </option>
+                                                    <option value="Maimunah Sarah Mayasari S.H." >
+                                Maimunah Sarah Mayasari S.H.
+                            </option>
+                                                    <option value="Maman Manullang" >
+                                Maman Manullang
+                            </option>
+                                                    <option value="Margana Halim" >
+                                Margana Halim
+                            </option>
+                                                    <option value="Mariadi Budiman" >
+                                Mariadi Budiman
+                            </option>
+                                                    <option value="Melinda Wahyuni" >
+                                Melinda Wahyuni
+                            </option>
+                                                    <option value="Mulyono Mansur" >
+                                Mulyono Mansur
+                            </option>
+                                                    <option value="Mustofa Habibi S.Pt" >
+                                Mustofa Habibi S.Pt
+                            </option>
+                                                    <option value="Nadia Puspasari" >
+                                Nadia Puspasari
+                            </option>
+                                                    <option value="Nadine Puspita" >
+                                Nadine Puspita
+                            </option>
+                                                    <option value="Nadine Wastuti" >
+                                Nadine Wastuti
+                            </option>
+                                                    <option value="Nugraha Sakti Utama" >
+                                Nugraha Sakti Utama
+                            </option>
+                                                    <option value="Oni Hesti Lestari S.E." >
+                                Oni Hesti Lestari S.E.
+                            </option>
+                                                    <option value="Pandu Hidayanto S.Gz" >
+                                Pandu Hidayanto S.Gz
+                            </option>
+                                                    <option value="Paris Ulva Uyainah S.Gz" >
+                                Paris Ulva Uyainah S.Gz
+                            </option>
+                                                    <option value="Patricia Mulyani" >
+                                Patricia Mulyani
+                            </option>
+                                                    <option value="Pia Safitri" >
+                                Pia Safitri
+                            </option>
+                                                    <option value="Praba Sitompul" >
+                                Praba Sitompul
+                            </option>
+                                                    <option value="Prabowo Jailani" >
+                                Prabowo Jailani
+                            </option>
+                                                    <option value="Puput Mardhiyah" >
+                                Puput Mardhiyah
+                            </option>
+                                                    <option value="Puput Raisa Andriani S.Psi" >
+                                Puput Raisa Andriani S.Psi
+                            </option>
+                                                    <option value="Purwa Kawaya Hutagalung" >
+                                Purwa Kawaya Hutagalung
+                            </option>
+                                                    <option value="Puspa Novitasari" >
+                                Puspa Novitasari
+                            </option>
+                                                    <option value="Puti Puspita M.M." >
+                                Puti Puspita M.M.
+                            </option>
+                                                    <option value="Putri Mandasari" >
+                                Putri Mandasari
+                            </option>
+                                                    <option value="Raden Maryadi Setiawan M.Pd" >
+                                Raden Maryadi Setiawan M.Pd
+                            </option>
+                                                    <option value="Rafi Mursinin Kurniawan" >
+                                Rafi Mursinin Kurniawan
+                            </option>
+                                                    <option value="Rahmat Omar Januar" >
+                                Rahmat Omar Januar
+                            </option>
+                                                    <option value="Rahmat Sihombing S.Psi" >
+                                Rahmat Sihombing S.Psi
+                            </option>
+                                                    <option value="Ratih Agustina" >
+                                Ratih Agustina
+                            </option>
+                                                    <option value="Restu Usada" >
+                                Restu Usada
+                            </option>
+                                                    <option value="Saadat Wijaya S.Pt" >
+                                Saadat Wijaya S.Pt
+                            </option>
+                                                    <option value="Sabrina Karen Suartini S.I.Kom" >
+                                Sabrina Karen Suartini S.I.Kom
+                            </option>
+                                                    <option value="Sadina Titi Halimah" >
+                                Sadina Titi Halimah
+                            </option>
+                                                    <option value="Samiah Lala Palastri" >
+                                Samiah Lala Palastri
+                            </option>
+                                                    <option value="Sari Laras Laksmiwati" >
+                                Sari Laras Laksmiwati
+                            </option>
+                                                    <option value="Septi Hafshah Yuliarti" >
+                                Septi Hafshah Yuliarti
+                            </option>
+                                                    <option value="Sidiq Narpati S.H." >
+                                Sidiq Narpati S.H.
+                            </option>
+                                                    <option value="Syahrini Victoria Yulianti" >
+                                Syahrini Victoria Yulianti
+                            </option>
+                                                    <option value="Tantri Hasna Hariyah" >
+                                Tantri Hasna Hariyah
+                            </option>
+                                                    <option value="Tirtayasa Soleh Damanik S.IP" >
+                                Tirtayasa Soleh Damanik S.IP
+                            </option>
+                                                    <option value="Tomi Tampubolon" >
+                                Tomi Tampubolon
+                            </option>
+                                                    <option value="Tomi Waluyo" >
+                                Tomi Waluyo
+                            </option>
+                                                    <option value="Vanya Ida Yulianti S.Psi" >
+                                Vanya Ida Yulianti S.Psi
+                            </option>
+                                                    <option value="Vega Pratama S.Sos" >
+                                Vega Pratama S.Sos
+                            </option>
+                                                    <option value="Wadi Hakim" >
+                                Wadi Hakim
+                            </option>
+                                                    <option value="Wage Taufik Mansur" >
+                                Wage Taufik Mansur
+                            </option>
+                                                    <option value="Wani Mardhiyah" >
+                                Wani Mardhiyah
+                            </option>
+                                                    <option value="Warsa Nababan S.IP" >
+                                Warsa Nababan S.IP
+                            </option>
+                                                    <option value="Wasis Thamrin S.Gz" >
+                                Wasis Thamrin S.Gz
+                            </option>
+                                                    <option value="Yoga Dongoran" >
+                                Yoga Dongoran
+                            </option>
+                                                    <option value="Zahra Elisa Farida" >
+                                Zahra Elisa Farida
+                            </option>
+                                                    <option value="Zulaikha Namaga" >
+                                Zulaikha Namaga
+                            </option>
+                                            </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label small text-muted mb-1">Search</label>
+                    <div class="input-group">
+                        <input type="search" name="search" value="posyandu" class="form-control" placeholder="Cari judul, isi atau penulis..." onkeydown="if(event.key==='Enter'){ this.form.submit(); }">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label small text-muted mb-1">&nbsp;</label>
+                    <div class="d-flex gap-2">
+                        <a href="http://127.0.0.1:8000/berita" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Reset
+                        </a>
+
+                        <a href="http://127.0.0.1:8000/berita" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1"></i> Clear Search
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr class="text-nowrap">
+                    <th style="width: 90px;">Cover</th>
+                    <th>Judul</th>
+                    <th>Kategori</th>
+                    <th>Status</th>
+                    <th>Penulis</th>
+                    <th>Terbit</th>
+                    <th class="text-center" style="width: 120px;">Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                                    <tr class="border-bottom">
+                        
+                        <td>
+                                                                                                                                <img src="https://picsum.photos/seed/berita4/1200/800"
+                                         alt="cover"
+                                         width="70"
+                                         height="50"
+                                         class="rounded border shadow-sm">
+                                                                                    </td>
+
+                        
+                        <td class="fw-semibold">
+                            <a href="#" class="text-decoration-none text-dark">
+                                Rehabilitasi Posyandu Balita Berjalan Lancar
+                            </a>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                Pendidikan
+                            </span>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge rounded-pill bg-secondary">
+                                <i class="bi bi-clock me-1"></i>
+                                Draft
+                            </span>
+                        </td>
+
+                        
+                        <td>Margana Halim</td>
+
+                        
+                        <td>26 Nov 2025</td>
+
+                        
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                
+                                <a href="http://127.0.0.1:8000/berita/9/edit"
+                                   class="btn btn-sm btn-outline-warning"
+                                   data-bs-toggle="tooltip"
+                                   title="Edit Berita">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                
+                                <form action="http://127.0.0.1:8000/berita/9"
+                                      method="POST"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Yakin hapus berita ini?')">
+                                    <input type="hidden" name="_token" value="6Wvs6r1hIaJwTRpaVRN7z6Z5qDHUqJR9QwfC5oDz" autocomplete="off">                                    <input type="hidden" name="_method" value="DELETE">                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="tooltip"
+                                            title="Hapus Berita">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                                    <tr class="border-bottom">
+                        
+                        <td>
+                                                                                                                                <img src="https://picsum.photos/seed/40/1200/800"
+                                         alt="cover"
+                                         width="70"
+                                         height="50"
+                                         class="rounded border shadow-sm">
+                                                                                    </td>
+
+                        
+                        <td class="fw-semibold">
+                            <a href="#" class="text-decoration-none text-dark">
+                                Warga Posyandu Balita Antusias Mengikuti Program D...
+                            </a>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                Pembangunan
+                            </span>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge rounded-pill bg-success">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Published
+                            </span>
+                        </td>
+
+                        
+                        <td>Atmaja Kasim Wibowo</td>
+
+                        
+                        <td>26 Nov 2025</td>
+
+                        
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                
+                                <a href="http://127.0.0.1:8000/berita/45/edit"
+                                   class="btn btn-sm btn-outline-warning"
+                                   data-bs-toggle="tooltip"
+                                   title="Edit Berita">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                
+                                <form action="http://127.0.0.1:8000/berita/45"
+                                      method="POST"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Yakin hapus berita ini?')">
+                                    <input type="hidden" name="_token" value="6Wvs6r1hIaJwTRpaVRN7z6Z5qDHUqJR9QwfC5oDz" autocomplete="off">                                    <input type="hidden" name="_method" value="DELETE">                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="tooltip"
+                                            title="Hapus Berita">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                                    <tr class="border-bottom">
+                        
+                        <td>
+                                                            <span class="text-muted small fst-italic">No Cover</span>
+                                                    </td>
+
+                        
+                        <td class="fw-semibold">
+                            <a href="#" class="text-decoration-none text-dark">
+                                Kegiatan Posyandu Balita Digelar di Balai Desa
+                            </a>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                Sosial
+                            </span>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge rounded-pill bg-success">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Published
+                            </span>
+                        </td>
+
+                        
+                        <td>Jindra Sihombing</td>
+
+                        
+                        <td>26 Nov 2025</td>
+
+                        
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                
+                                <a href="http://127.0.0.1:8000/berita/62/edit"
+                                   class="btn btn-sm btn-outline-warning"
+                                   data-bs-toggle="tooltip"
+                                   title="Edit Berita">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                
+                                <form action="http://127.0.0.1:8000/berita/62"
+                                      method="POST"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Yakin hapus berita ini?')">
+                                    <input type="hidden" name="_token" value="6Wvs6r1hIaJwTRpaVRN7z6Z5qDHUqJR9QwfC5oDz" autocomplete="off">                                    <input type="hidden" name="_method" value="DELETE">                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="tooltip"
+                                            title="Hapus Berita">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                                    <tr class="border-bottom">
+                        
+                        <td>
+                                                                                                                                <img src="https://picsum.photos/seed/100/1200/800"
+                                         alt="cover"
+                                         width="70"
+                                         height="50"
+                                         class="rounded border shadow-sm">
+                                                                                    </td>
+
+                        
+                        <td class="fw-semibold">
+                            <a href="#" class="text-decoration-none text-dark">
+                                Rangkaian Posyandu Balita Menarik Minat Masyarakat
+                            </a>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                Kegiatan
+                            </span>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge rounded-pill bg-success">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Published
+                            </span>
+                        </td>
+
+                        
+                        <td>Ayu Samiah Widiastuti</td>
+
+                        
+                        <td>26 Nov 2025</td>
+
+                        
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                
+                                <a href="http://127.0.0.1:8000/berita/105/edit"
+                                   class="btn btn-sm btn-outline-warning"
+                                   data-bs-toggle="tooltip"
+                                   title="Edit Berita">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                
+                                <form action="http://127.0.0.1:8000/berita/105"
+                                      method="POST"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Yakin hapus berita ini?')">
+                                    <input type="hidden" name="_token" value="6Wvs6r1hIaJwTRpaVRN7z6Z5qDHUqJR9QwfC5oDz" autocomplete="off">                                    <input type="hidden" name="_method" value="DELETE">                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="tooltip"
+                                            title="Hapus Berita">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                                    <tr class="border-bottom">
+                        
+                        <td>
+                                                            <span class="text-muted small fst-italic">No Cover</span>
+                                                    </td>
+
+                        
+                        <td class="fw-semibold">
+                            <a href="#" class="text-decoration-none text-dark">
+                                Posyandu Balita Jadi Fokus Pembangunan Tahun Ini
+                            </a>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                Pendidikan
+                            </span>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge rounded-pill bg-secondary">
+                                <i class="bi bi-clock me-1"></i>
+                                Draft
+                            </span>
+                        </td>
+
+                        
+                        <td>Sari Laras Laksmiwati</td>
+
+                        
+                        <td>26 Nov 2025</td>
+
+                        
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                
+                                <a href="http://127.0.0.1:8000/berita/111/edit"
+                                   class="btn btn-sm btn-outline-warning"
+                                   data-bs-toggle="tooltip"
+                                   title="Edit Berita">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                
+                                <form action="http://127.0.0.1:8000/berita/111"
+                                      method="POST"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Yakin hapus berita ini?')">
+                                    <input type="hidden" name="_token" value="6Wvs6r1hIaJwTRpaVRN7z6Z5qDHUqJR9QwfC5oDz" autocomplete="off">                                    <input type="hidden" name="_method" value="DELETE">                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="tooltip"
+                                            title="Hapus Berita">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                                    <tr class="border-bottom">
+                        
+                        <td>
+                                                                                                                                <img src="https://picsum.photos/seed/146/1200/800"
+                                         alt="cover"
+                                         width="70"
+                                         height="50"
+                                         class="rounded border shadow-sm">
+                                                                                    </td>
+
+                        
+                        <td class="fw-semibold">
+                            <a href="#" class="text-decoration-none text-dark">
+                                Proyek Posyandu Balita Tuntas sesuai Jadwal
+                            </a>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge bg-light text-dark border">
+                                Pendidikan
+                            </span>
+                        </td>
+
+                        
+                        <td>
+                            <span class="badge rounded-pill bg-secondary">
+                                <i class="bi bi-clock me-1"></i>
+                                Draft
+                            </span>
+                        </td>
+
+                        
+                        <td>Irma Uyainah</td>
+
+                        
+                        <td>26 Nov 2025</td>
+
+                        
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-2">
+                                
+                                <a href="http://127.0.0.1:8000/berita/151/edit"
+                                   class="btn btn-sm btn-outline-warning"
+                                   data-bs-toggle="tooltip"
+                                   title="Edit Berita">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                
+                                <form action="http://127.0.0.1:8000/berita/151"
+                                      method="POST"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Yakin hapus berita ini?')">
+                                    <input type="hidden" name="_token" value="6Wvs6r1hIaJwTRpaVRN7z6Z5qDHUqJR9QwfC5oDz" autocomplete="off">                                    <input type="hidden" name="_method" value="DELETE">                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="tooltip"
+                                            title="Hapus Berita">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="mt-4 d-flex justify-content-between align-items-center">
+    
+    <div class="small text-muted">
+        Menampilkan 1 - 6 dari 6 berita
+    </div>
+
+    
+    <div>
+        
+    </div>
+</div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+    <span>&copy; 2025 Portal Berita Desa — All Rights Reserved.</span>
+    <div class="whatsapp-float">
+        <a href="https://wa.me/6281234567890?text=Halo%2C%20saya%20membutuhkan%20bantuan%20tentang%20sistem%20desa"
+            target="_blank" class="whatsapp-link" id="whatsappFloat">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+
+        <div class="whatsapp-tooltip">
+            Butuh Bantuan?
+        </div>
+    </div>
+</footer>
+;
+
+    <!-- Scripts -->
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Semua textarea dengan class "summernote" otomatis jadi editor
+            $('.summernote').summernote({
+                placeholder: 'Tulis konten di sini...',
+                height: 250,
+                tabsize: 2,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontname', ['fontname']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+        });
+    </script>
+;
+
+    </body>
+</html>

@@ -6,6 +6,7 @@ use App\Models\Berita;
 use App\Models\Kategori;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Illuminate\Support\Str;
 
 class BeritaSeeder extends Seeder
 {
@@ -13,66 +14,150 @@ class BeritaSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        // Ambil semua ID kategori yang ada agar relasinya valid
-        // Jika tabel kategori kosong, kode akan error/stop.
+        // Ambil semua kategori yang ada
         $kategoriIds = Kategori::pluck('id')->toArray();
 
+        // Jika tabel kategori kosong, buat beberapa kategori default agar seeder tetap berjalan
         if (empty($kategoriIds)) {
-            $this->command->info('Tabel kategori kosong. Jalankan KategoriSeeder terlebih dahulu!');
-            return;
+            $this->command->info('Tabel kategori kosong. Membuat kategori default...');
+
+            $defaultKategori = [
+                ['nama' => 'Pengumuman', 'deskripsi' => 'Informasi penting untuk warga'],
+                ['nama' => 'Kegiatan', 'deskripsi' => 'Berita tentang kegiatan desa'],
+                ['nama' => 'Pembangunan', 'deskripsi' => 'Proyek dan pembangunan desa'],
+                ['nama' => 'Sosial', 'deskripsi' => 'Berita sosial dan bantuan'],
+                ['nama' => 'Pendidikan', 'deskripsi' => 'Kegiatan pendidikan dan posyandu'],
+            ];
+
+            foreach ($defaultKategori as $k) {
+                Kategori::create($k);
+            }
+
+            // Ambil ulang id kategori setelah dibuat
+            $kategoriIds = Kategori::pluck('id')->toArray();
+            $this->command->info('Kategori default berhasil dibuat.');
         }
 
-        // Kita buat 25 berita dummy
-        for ($i = 0; $i < 25; $i++) {
-            
-            // Membuat isi berita seolah-olah HTML (3 paragraf)
+        $this->command->info('Membuat 150 data berita dummy...');
+
+        // Ubah dari 100 menjadi 150 data
+        for ($i = 0; $i < 150; $i++) {
+
+            // Isi berita dalam HTML (3–4 paragraf)
             $isiBerita = '';
-            foreach ($faker->paragraphs(3) as $paragraf) {
+            foreach ($faker->paragraphs(rand(3, 4)) as $paragraf) {
                 $isiBerita .= "<p>{$paragraf}</p>";
             }
 
-            // Menggunakan Eloquent Create agar event 'booted' di Model jalan (untuk Slug otomatis)
-            Berita::create([
-                'kategori_id' => $faker->randomElement($kategoriIds), // Pilih kategori acak
-                'judul'       => $this->generateJudul($faker), // Judul kustom gaya berita desa
-                // 'slug'     => Tidak perlu diisi, otomatis dibuat oleh Model
-                'isi_html'    => $isiBerita,
-                'penulis'     => $faker->name, // Nama orang Indonesia
-                'status'      => $faker->randomElement(['published', 'published', 'draft']), // Lebih banyak published
-                'terbit_at'   => $faker->dateTimeBetween('-1 year', 'now'),
-                'cover'       => null, // Kosongkan atau isi path gambar dummy
-            ]);
+            // beberapa URL gambar placeholder (bisa diganti dengan path lokal jika perlu)
+            $covers = [
+                'https://picsum.photos/seed/' . ($i + 1) . '/1200/800',
+                'https://picsum.photos/seed/berita' . ($i + 1) . '/1200/800',
+                null // beberapa entri tanpa cover
+            ];
+
+            $judul = $this->generateJudulIndonesia($faker);
+            // buat slug dasar dan pastikan unik (tambahkan suffix jika perlu)
+            $baseSlug = Str::slug($judul);
+            $slug = $baseSlug;
+            $suffix = 1;
+            while (Berita::where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $suffix++;
+            }
+
+            try {
+                Berita::create([
+                    'kategori_id' => $faker->randomElement($kategoriIds),
+                    'judul'       => $judul,
+                    'isi_html'    => $isiBerita,
+                    'penulis'     => $faker->name,
+                    'status'      => $faker->randomElement(['published', 'published', 'draft']),
+                    'terbit_at'   => $faker->dateTimeBetween('-6 months', 'now'),
+                    'cover'       => $faker->randomElement($covers),
+                    'slug'        => $slug,
+                ]);
+            } catch (\Exception $e) {
+                // jika ada error unik lainnya, log dan lanjutkan
+                $this->command->error("Gagal membuat berita ke-" . ($i + 1) . ": " . $e->getMessage());
+                continue;
+            }
+
+            // Progress indicator
+            if (($i + 1) % 50 === 0) {
+                $this->command->info("Created {$i} berita...");
+            }
         }
+
+        $this->command->info('Sukses membuat 150 data berita dummy!');
     }
 
     /**
-     * Fungsi bantuan untuk membuat judul berita yang terdengar "Desa banget"
+     * Membuat judul berita yang khas Indonesia (desa/kelurahan)
      */
-    private function generateJudul($faker)
+    private function generateJudulIndonesia($faker)
     {
-        $prefix = [
-            'Kegiatan', 'Pembangunan', 'Sosialisasi', 'Musyawarah', 'Perayaan', 
-            'Kunjungan', 'Laporan', 'Warga', 'Prestasi'
+        $template1 = [
+            'Kegiatan %s Digelar di Balai Desa',
+            'Warga %s Antusias Mengikuti Program Desa',
+            'Pemdes Adakan %s untuk Masyarakat',
+            'Sosialisasi %s Resmi Dimulai',
+            'Pemuda Desa Sukses Gelar %s Tahunan',
+            'Acara %s Berjalan dengan Sukses',
+            'Program %s Dapat Apresiasi dari Warga',
+            'Pelaksanaan %s di Desa Kita',
+            'Rangkaian %s Menarik Minat Masyarakat',
+            'Inisiatif %s Dukung Kemajuan Desa'
+        ];
+
+        $template2 = [
+            'Pembangunan %s Mulai Dikerjakan',
+            'Perbaikan %s Akhirnya Rampung',
+            'Program %s Mendapat Dukungan Warga',
+            '%s Jadi Fokus Pembangunan Tahun Ini',
+            'Proyek %s Tuntas sesuai Jadwal',
+            'Renovasi %s Tinggal Selangkah Lagi',
+            'Inovasi %s Tingkatkan Kesejahteraan',
+            'Pengembangan %s Capai Target',
+            'Rehabilitasi %s Berjalan Lancar',
+            'Modernisasi %s Sukses Dilaksanakan'
         ];
 
         $topik = [
-            'Gotong Royong Bersih Desa',
-            'Penyaluran BLT Dana Desa',
-            'Posyandu Balita dan Lansia',
-            'Perbaikan Jalan Poros Desa',
-            'Panen Raya Padi',
-            'HUT Kemerdekaan RI ke-79',
-            'Rapat Anggaran Desa',
-            'Pelatihan UMKM Ibu-ibu PKK',
-            'Vaksinasi Hewan Ternak',
-            'Pentas Seni Pemuda'
+            'Gotong Royong',
+            'Posyandu Balita',
+            'Pelatihan UMKM',
+            'Festival Budaya',
+            'Pengajian Akbar',
+            'Pembangunan Jalan Utama',
+            'Penyaluran Bantuan Sosial',
+            'Bersih-Bersih Lingkungan',
+            'Vaksinasi Ternak',
+            'Perayaan HUT Kemerdekaan',
+            'Lomba Olahraga Desa',
+            'Pasar Murah',
+            'Koperasi Simpan Pinjam',
+            'Taman Baca Masyarakat',
+            'Bank Sampah',
+            'Wisata Desa',
+            'Pertanian Organik',
+            'Peternakan Modern',
+            'Perikanan Budidaya',
+            'Kerajinan Tangan'
         ];
 
-        // 50% kemungkin pakai judul kustom, 50% pakai Faker kalimat biasa
+        // 50% pakai template1, 50% pakai template2
         if (rand(0, 1)) {
-            return $faker->randomElement($prefix) . ' ' . $faker->randomElement($topik);
+            $judul = sprintf(
+                $faker->randomElement($template1),
+                $faker->randomElement($topik)
+            );
+        } else {
+            $judul = sprintf(
+                $faker->randomElement($template2),
+                $faker->randomElement($topik)
+            );
         }
 
-        return str_replace('.', '', $faker->sentence(6)); // Hapus titik di akhir judul
+        return $judul;
     }
 }

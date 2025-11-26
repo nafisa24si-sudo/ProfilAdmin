@@ -64,7 +64,7 @@ class WargaController extends Controller
             // Simpan data
             Warga::create($validated);
 
-            return redirect()->route('pages.warga.index')
+            return redirect()->route('warga.index')
                 ->with('success', 'Data warga berhasil ditambahkan.');
 
         } catch (\Exception $e) {
@@ -80,10 +80,10 @@ class WargaController extends Controller
     {
         try {
             $warga = Warga::findOrFail($id);
-            return view('warga.show', compact('warga'));
+            return view('pages.warga.show', compact('warga'));
 
         } catch (\Exception $e) {
-            return redirect()->route('pageswarga.index')
+            return redirect()->route('warga.index')
                 ->with('error', 'Data warga tidak ditemukan.');
         }
     }
@@ -95,10 +95,10 @@ class WargaController extends Controller
     {
         try {
             $warga = Warga::findOrFail($id);
-            return view('pageswarga.edit', compact('warga'));
+            return view('pages.warga.edit', compact('warga'));
 
         } catch (\Exception $e) {
-            return redirect()->route('pages.warga.index')
+            return redirect()->route('warga.index')
                 ->with('error', 'Data warga tidak ditemukan.');
         }
     }
@@ -131,7 +131,7 @@ class WargaController extends Controller
             // Update data
             $warga->update($validated);
 
-            return redirect()->route('pageswarga.index')
+            return redirect()->route('warga.index')
                 ->with('success', 'Data warga berhasil diperbarui.');
 
         } catch (\Exception $e) {

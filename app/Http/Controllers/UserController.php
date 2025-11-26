@@ -9,7 +9,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::orderBy('nama_lengkap')->paginate(10);
+        $users = User::orderBy('name')->paginate(10);
         
         // Gunakan view di folder pages (tanpa auth)
         return view('pages.user.index', compact('users'));
@@ -25,7 +25,7 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'username' => 'required|string|max:50|unique:users',
-            'nama_lengkap' => 'required|string|max:100',
+            'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6|confirmed',
             'role' => 'required|in:admin,user,warga'
@@ -34,7 +34,7 @@ class UserController extends Controller
         $validated['password'] = bcrypt($validated['password']);
         User::create($validated);
 
-        return redirect()->route('pages.user.index')
+        return redirect()->route('user.index')
             ->with('success', 'User berhasil ditambahkan!');
     }
 
@@ -52,14 +52,14 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'username' => 'required|string|max:50|unique:users,username,' . $user->id,
-            'nama_lengkap' => 'required|string|max:100',
+            'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'role' => 'required|in:admin,user,warga'
         ]);
 
         $user->update($validated);
 
-        return redirect()->route('pages.user.index')
+        return redirect()->route('user.index')
             ->with('success', 'User berhasil diperbarui!');
     }
 

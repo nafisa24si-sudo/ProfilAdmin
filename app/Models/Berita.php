@@ -2,41 +2,62 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Berita extends Model
 {
     use HasFactory;
 
-    // Nama tabel
-    protected $table = 'beritas';
-
-    // Kolom yang bisa diisi mass-assignment
     protected $fillable = [
-        'kategori_id',
         'judul',
-        'slug',
+        'kategori_id',
         'isi_html',
         'penulis',
         'status',
         'terbit_at',
-        'cover',
+        'cover'
     ];
 
-    // Event otomatis ketika membuat berita
-    protected static function booted()
+    protected $casts = [
+        'terbit_at' => 'datetime'
+    ];
+
+    // Relationship dengan kategori
+    public function kategori(): BelongsTo
     {
-        static::creating(function ($berita) {
-            // Buat slug unik berdasarkan judul
-            $berita->slug = Str::slug($berita->judul) . '-' . time();
-        });
+        return $this->belongsTo(Kategori::class);
     }
 
-    // Relasi ke kategori
-    public function kategori()
+    // Scope untuk filter
+    public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
     {
-        return $this->belongsTo(Kategori::class, 'kategori_id');
+        foreach ($filterableColumns as $column) {
+            if ($request->filled($column)) {
+                $query->where($column, $request->input($column));
+            }
+        }
+        return $query;
+    }
+
+    /**
+     * Scope untuk search pada beberapa kolom.
+     * Pemanggilan: ->search($request, ['judul','isi_html','penulis'])
+     */
+    public function scopeSearch(Builder $query, $request, array $columns): Builder
+    {
+        if (!$request->filled('search')) {
+            return $query;
+        }
+
+        $term = $request->input('search');
+
+        return $query->where(function (Builder $q) use ($columns, $term) {
+            foreach ($columns as $col) {
+                $q->orWhere($col, 'like', '%' . $term . '%');
+            }
+        });
     }
 }

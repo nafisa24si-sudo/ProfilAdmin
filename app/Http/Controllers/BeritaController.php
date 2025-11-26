@@ -11,25 +11,58 @@ class BeritaController extends Controller
     /**
      * Tampilkan daftar berita.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Gunakan paginate agar bisa pakai $berita->links() di Blade
-        $berita = Berita::with('kategori')->latest()->paginate(10);
-        return view('pages.berita.index', compact('berita'));
+        // Log akses untuk debugging: memastikan method dipanggil
+        \Log::info('BeritaController@index dipanggil', ['request' => $request->all()]);
+        // Kolom yang bisa di-filter
+        $filterableColumns = ['kategori_id', 'status', 'penulis'];
+
+        // Kolom yang akan dipakai untuk fitur pencarian (search)
+        $searchableColumns = ['judul', 'isi_html', 'penulis'];
+        
+        // Query dengan filter dan pagination (hindari pemanggilan scope yang gagal)
+        $beritaQuery = Berita::with('kategori');
+        foreach ($filterableColumns as $column) {
+            if ($request->filled($column)) {
+                $beritaQuery->where($column, $request->input($column));
+            }
+        }
+
+        // Terapkan search (jika ada) menggunakan scopeSearch di model
+        $beritaQuery = $beritaQuery->search($request, $searchableColumns);
+
+        $berita = $beritaQuery
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $kategori = Kategori::all();
+        
+        // Dapatkan daftar penulis unik untuk dropdown filter
+        $authors = Berita::whereNotNull('penulis')
+            ->distinct()
+            ->pluck('penulis')
+            ->filter()
+            ->sort()
+            ->values();
+
+        \Log::info('BeritaController@index data', [
+            'kategori_count' => $kategori->count(),
+            'berita_count' => $berita->total(),
+            'authors_count' => $authors->count(),
+        ]);
+
+        return view('pages.berita.index', compact('berita', 'kategori', 'authors'));
     }
 
-    /**
-     * Tampilkan form tambah berita.
-     */
+    // Method lainnya tetap sama...
     public function create()
     {
         $kategori = Kategori::all();
         return view('pages.berita.create', compact('kategori'));
     }
 
-    /**
-     * Simpan berita baru.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -49,18 +82,12 @@ class BeritaController extends Controller
             ->with('success', 'Berita berhasil ditambahkan.');
     }
 
-    /**
-     * Tampilkan form edit berita.
-     */
     public function edit(Berita $berita)
     {
         $kategori = Kategori::all();
         return view('pages.berita.form', compact('berita', 'kategori'));
     }
 
-    /**
-     * Update data berita.
-     */
     public function update(Request $request, Berita $berita)
     {
         $validated = $request->validate([
@@ -80,9 +107,6 @@ class BeritaController extends Controller
             ->with('success', 'Berita berhasil diperbarui.');
     }
 
-    /**
-     * Hapus berita.
-     */
     public function destroy(Berita $berita)
     {
         $berita->delete();
