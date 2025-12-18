@@ -12,7 +12,7 @@
     @include('layouts.auth.css')
     {{-- End CSs --}}
 </head>
-<body>
+<body class="auth-bg">
     <!-- Floating WhatsApp Button -->
     @include('layouts.auth.footer')
 

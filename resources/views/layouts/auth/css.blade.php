@@ -28,6 +28,22 @@
         padding: 20px;
     }
 
+    /* Jika ingin menggunakan foto sebagai background full-screen, letakkan file di public/images/custom_bg.jpg */
+    body.auth-bg {
+        background: url('{{ asset('images/custom_bg.jpg') }}') no-repeat center center fixed;
+        background-size: cover;
+    }
+
+    /* Dark overlay to improve contrast for the login card */
+    body.auth-bg::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.35);
+        pointer-events: none;
+        z-index: 0;
+    }
+
     .login-container {
         display: flex;
         max-width: 1100px;
@@ -53,6 +69,31 @@
         flex: 1;
         background-color: white;
         padding: 50px 40px;
+    }
+
+    /* Layout untuk tampilan seperti contoh — kartu login di tengah atas background foto */
+    body.auth-bg .login-container {
+        max-width: 820px;
+        width: 820px;
+        border-radius: 12px;
+        overflow: visible;
+        background: transparent;
+        box-shadow: none;
+        display: block;
+    }
+
+    body.auth-bg .login-left { display: none; }
+
+    body.auth-bg .login-right {
+        margin: 60px auto;
+        width: 520px;
+        border-radius: 8px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+        padding: 36px;
+        background: rgba(255,255,255,0.9);
+        position: relative;
+        z-index: 1;
+        backdrop-filter: blur(6px);
     }
 
     /* Logo Styles */

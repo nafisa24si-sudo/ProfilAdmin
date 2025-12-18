@@ -17,6 +17,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'avatar',
     ];
 
     /**
@@ -45,5 +47,13 @@ class User extends Authenticatable
         } else {
             $this->attributes['password'] = $value;
         }
+    }
+
+    /**
+     * Helper cepat cek admin
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 }

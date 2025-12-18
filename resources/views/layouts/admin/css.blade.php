@@ -36,6 +36,7 @@
         transition: transform 0.3s ease;
         box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
         z-index: 1000;
+        overflow-y: auto;
     }
 
     .sidebar.hide {

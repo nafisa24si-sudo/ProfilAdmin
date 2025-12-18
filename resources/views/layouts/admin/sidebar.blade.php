@@ -1,11 +1,10 @@
 <aside class="sidebar">
         <div>
-            <a href="{{ route('dashboard') }}" class="sidebar-brand">
-                <div class="sidebar-brand-icon">
-                    <i class="bi bi-newspaper"></i>
-                </div>
-                <span class="sidebar-brand-text">Bina Desa</span>
-            </a>
+            <div class="text-center mb-4">
+                <a href="{{ route('dashboard') }}">
+                    <img src="{{ asset('images/logo-desa.png') }}" alt="Logo Desa" style="width: 100px; height: 100px; object-fit: contain;">
+                </a>
+            </div>
 
             <nav class="nav flex-column">
                 <span class="sidebar-section-title">Navigasi Utama</span>
@@ -26,12 +25,28 @@
                     <i class="bi bi-newspaper me-2"></i> Berita
                 </a>
 
-                <a href="{{ route('warga.index') }}" class="nav-link {{ request()->routeIs('Warga.*') ? 'active' : '' }}">
-                    <i class="bi bi-tags me-2"></i> Warga
+                <a href="{{ route('warga.index') }}" class="nav-link {{ request()->routeIs('warga.*') ? 'active' : '' }}">
+                    <i class="bi bi-people me-2"></i> Warga
                 </a>
 
-                <a href="{{ route('user.index') }}" class="nav-link {{ request()->routeIs('User.*') ? 'active' : '' }}">
-                    <i class="bi bi-tags me-2"></i> User
+                <a href="{{ route('user.index') }}" class="nav-link {{ request()->routeIs('user.index') ? 'active' : '' }}">
+                    <i class="bi bi-person-gear me-2"></i> User
+                </a>
+
+                <a href="{{ route('agenda.index') }}" class="nav-link {{ request()->routeIs('agenda.*') ? 'active' : '' }}">
+                    <i class="bi bi-calendar-event me-2"></i> Agenda
+                </a>
+
+                <a href="{{ route('galeri.index') }}" class="nav-link {{ request()->routeIs('galeri.*') ? 'active' : '' }}">
+                    <i class="bi bi-images me-2"></i> Galeri 
+                </a>
+
+                <a href="{{ route('about.developer') }}" class="nav-link {{ request()->routeIs('about.*') ? 'active' : '' }}">
+                    <i class="bi bi-person-badge me-2"></i> Tentang Pengembang
+                </a>
+
+                <a href="{{ route('user.avatar') }}" class="nav-link {{ request()->routeIs('user.avatar*') ? 'active' : '' }}">
+                    <i class="bi bi-person-circle me-2"></i> Upload Foto
                 </a>
             </nav>
         </div>

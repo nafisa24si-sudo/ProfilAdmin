@@ -40,7 +40,8 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']), // penting: Hash password
+            'password' => Hash::make($validated['password']),
+            'role' => 'user',
         ]);
 
         // Login otomatis setelah registrasi
@@ -60,27 +61,19 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // Cek apakah email benar-benar ada di database
-        $user = User::where('email', $credentials['email'])->first();
-
-        if (!$user) {
-            return back()->withErrors([
-                'email' => 'Akun tidak ditemukan. Silakan daftar terlebih dahulu.',
-            ])->onlyInput('email');
+        // Gunakan Laravel Auth::attempt untuk keamanan yang lebih baik
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            
+            // Simpan waktu login terakhir
+            session(['last_login' => now()]);
+            
+            return redirect()->route('dashboard')->with('success', 'Login berhasil!');
         }
 
-        // Cek apakah password cocok
-        if (!Hash::check($credentials['password'], $user->password)) {
-            return back()->withErrors([
-                'email' => 'Email atau password salah.',
-            ])->onlyInput('email');
-        }
-
-        // Login user
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return redirect()->route('dashboard')->with('success', 'Login berhasil!');
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
+        ])->onlyInput('email');
     }
 
     /**

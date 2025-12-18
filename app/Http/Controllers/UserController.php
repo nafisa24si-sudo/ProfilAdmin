@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::orderBy('name')->paginate(10);
+        $users = User::orderBy('name')->paginate(50);
         
         // Gunakan view di folder pages (tanpa auth)
         return view('pages.user.index', compact('users'));
@@ -68,5 +70,39 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('user.index')
             ->with('success', 'User berhasil dihapus!');
+    }
+
+    public function showAvatarForm()
+    {
+        return view('pages.user.avatar');
+    }
+
+    public function uploadAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg|max:2048'
+        ]);
+
+        $user = Auth::user();
+        
+        if ($request->hasFile('avatar')) {
+            // Hapus avatar lama jika ada
+            if ($user->avatar && file_exists(public_path('images/profiles/' . $user->avatar))) {
+                unlink(public_path('images/profiles/' . $user->avatar));
+            }
+
+            // Upload avatar baru
+            $file = $request->file('avatar');
+            $filename = time() . '_' . $user->id . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images/profiles'), $filename);
+
+            // Update database
+            $user->update(['avatar' => $filename]);
+
+            return redirect()->route('user.avatar')
+                ->with('success', 'Avatar berhasil diupload!');
+        }
+
+        return redirect()->back()->with('error', 'Gagal upload avatar!');
     }
 }

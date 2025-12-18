@@ -67,6 +67,69 @@
                 </select>
             </div>
 
+            <!-- Section untuk Upload Media Files -->
+            <div class="card border-0 bg-light mt-4 mb-4">
+                <div class="card-body">
+                    <h6 class="card-title fw-bold">Upload File Media (opsional)</h6>
+                    <p class="text-muted small">Unggah gambar, PDF, atau file lainnya untuk melengkapi berita. Ukuran maksimal per file: 10 MB.</p>
+                    
+                    <div id="media-uploads" class="mb-3">
+                        <div class="media-upload-item mb-3 p-3 bg-white border rounded">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label class="form-label small fw-semibold">File</label>
+                                    <input type="file" name="media_files[]" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-semibold">Caption (opsional)</label>
+                                    <input type="text" name="media_captions[]" class="form-control form-control-sm" placeholder="Deskripsi file...">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger mt-2 remove-media-upload" style="display:none;">Hapus</button>
+                        </div>
+                    </div>
+
+                    <button type="button" id="add-media-upload" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-plus"></i> Tambah File Lain
+                    </button>
+                </div>
+            </div>
+
+            <!-- Display Existing Media Files (Edit View Only) -->
+            @if(isset($berita) && $berita->mediaFiles->count() > 0)
+            <div class="card border-0 bg-light mb-4">
+                <div class="card-body">
+                    <h6 class="card-title fw-bold">File Media yang Sudah Ada</h6>
+                    <div class="row">
+                        @foreach($berita->mediaFiles as $media)
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                @if($media->isImage())
+                                    <img src="{{ $media->getFileUrl() }}" class="card-img-top" alt="{{ $media->caption }}" style="height: 200px; object-fit: cover;">
+                                @else
+                                    <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <i class="bi bi-file-earmark text-white" style="font-size: 3rem;"></i>
+                                    </div>
+                                @endif
+                                <div class="card-body">
+                                    <p class="card-text small"><strong>{{ $media->caption ?? 'Tanpa Keterangan' }}</strong></p>
+                                    <p class="card-text text-muted small">{{ $media->file_name }}</p>
+                                    <form action="{{ route('media.delete', $media->media_id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger w-100" onclick="return confirm('Yakin ingin menghapus file ini?')">
+                                            <i class="bi bi-trash"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            @endif
+
             {{-- Tombol --}}
             <div class="d-flex justify-content-end mt-4">
                 <a href="{{ route('berita.index') }}" class="btn btn-secondary me-2">
@@ -79,4 +142,33 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tambah media upload field
+    document.getElementById('add-media-upload').addEventListener('click', function() {
+        const container = document.getElementById('media-uploads');
+        const newItem = container.querySelector('.media-upload-item').cloneNode(true);
+        
+        // Reset input values
+        newItem.querySelector('input[name="media_files[]"]').value = '';
+        newItem.querySelector('input[name="media_captions[]"]').value = '';
+        
+        // Show remove button
+        newItem.querySelector('.remove-media-upload').style.display = 'inline-block';
+        newItem.querySelector('.remove-media-upload').addEventListener('click', function() {
+            newItem.remove();
+        });
+        
+        container.appendChild(newItem);
+    });
+
+    // Remove media upload field
+    document.querySelectorAll('.remove-media-upload').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.closest('.media-upload-item').remove();
+        });
+    });
+});
+</script>
 @endsection

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Berita extends Model
 {
@@ -29,6 +30,17 @@ class Berita extends Model
     public function kategori(): BelongsTo
     {
         return $this->belongsTo(Kategori::class);
+    }
+
+    /**
+     * Relationship dengan media files
+     * Dapatkan semua file media yang terkait dengan berita ini
+     */
+    public function mediaFiles(): HasMany
+    {
+        return $this->hasMany(Media::class, 'ref_id')
+                    ->where('ref_table', 'berita')
+                    ->orderBy('sort_order', 'asc');
     }
 
     // Scope untuk filter

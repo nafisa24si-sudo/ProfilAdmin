@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin.app')
 
 @section('title', 'Data Warga')
 
@@ -52,7 +52,7 @@
                                 <th>TTL</th>
                                 <th>Alamat</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <th class="text-center" style="width: 120px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -73,19 +73,28 @@
                                         {{ $warga->status_hidup }}
                                     </span>
                                 </td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('warga.edit', $warga->id_warga) }}" 
-                                           class="btn btn-warning" title="Edit">
-                                            <i class="fas fa-edit"></i>
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-2">
+                                        {{-- Edit --}}
+                                        <a href="{{ route('warga.edit', $warga->id_warga) }}"
+                                           class="btn btn-sm btn-outline-warning"
+                                           data-bs-toggle="tooltip"
+                                           title="Edit Warga">
+                                            <i class="bi bi-pencil"></i>
                                         </a>
-                                        <form action="{{ route('warga.destroy', $warga->id_warga) }}" method="POST">
+
+                                        {{-- Delete --}}
+                                        <form action="{{ route('warga.destroy', $warga->id_warga) }}"
+                                              method="POST"
+                                              class="d-inline"
+                                              onsubmit="return confirm('Yakin menghapus warga {{ $warga->nama }}?')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger" 
-                                                    onclick="return confirm('Yakin menghapus warga {{ $warga->nama }}?')"
-                                                    title="Hapus">
-                                                <i class="fas fa-trash"></i>
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Hapus Warga">
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
                                     </div>

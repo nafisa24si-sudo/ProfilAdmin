@@ -14,10 +14,8 @@ class BeritaSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        // Ambil semua kategori yang ada
         $kategoriIds = Kategori::pluck('id')->toArray();
 
-        // Jika tabel kategori kosong, buat beberapa kategori default agar seeder tetap berjalan
         if (empty($kategoriIds)) {
             $this->command->info('Tabel kategori kosong. Membuat kategori default...');
 
@@ -33,23 +31,21 @@ class BeritaSeeder extends Seeder
                 Kategori::create($k);
             }
 
-            // Ambil ulang id kategori setelah dibuat
             $kategoriIds = Kategori::pluck('id')->toArray();
             $this->command->info('Kategori default berhasil dibuat.');
         }
 
         $this->command->info('Membuat 150 data berita dummy...');
 
-        // Ubah dari 100 menjadi 150 data
+   
         for ($i = 0; $i < 150; $i++) {
 
-            // Isi berita dalam HTML (3–4 paragraf)
             $isiBerita = '';
             foreach ($faker->paragraphs(rand(3, 4)) as $paragraf) {
                 $isiBerita .= "<p>{$paragraf}</p>";
             }
 
-            // beberapa URL gambar placeholder (bisa diganti dengan path lokal jika perlu)
+          
             $covers = [
                 'https://picsum.photos/seed/' . ($i + 1) . '/1200/800',
                 'https://picsum.photos/seed/berita' . ($i + 1) . '/1200/800',
@@ -57,7 +53,7 @@ class BeritaSeeder extends Seeder
             ];
 
             $judul = $this->generateJudulIndonesia($faker);
-            // buat slug dasar dan pastikan unik (tambahkan suffix jika perlu)
+         
             $baseSlug = Str::slug($judul);
             $slug = $baseSlug;
             $suffix = 1;

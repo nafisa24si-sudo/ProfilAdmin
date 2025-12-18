@@ -50,7 +50,7 @@
                                     <th>Nama Lengkap</th>
                                     <th>Level Akses</th>
                                     <th>Status</th>
-                                    <th width="15%" class="text-end">Aksi</th>
+                                    <th class="text-center" style="width: 120px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -77,17 +77,32 @@
                                                 {{ ucfirst($user->status) }}
                                             </span>
                                         </td>
-                                        <td class="text-end">
-                                            <a href="{{ route('user.edit', $user) }}" class="btn btn-sm btn-warning me-1" title="Edit">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
-                                            <form action="{{ route('user.destroy', $user) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus user ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-sm btn-danger" title="Hapus" {{ $user->id == auth()->id() ? 'disabled' : '' }}>
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center gap-2">
+                                                {{-- Edit --}}
+                                                <a href="{{ route('user.edit', $user) }}"
+                                                   class="btn btn-sm btn-outline-warning"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Edit User">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+
+                                                {{-- Delete --}}
+                                                <form action="{{ route('user.destroy', $user) }}"
+                                                      method="POST"
+                                                      class="d-inline"
+                                                      onsubmit="return confirm('Hapus user ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-danger"
+                                                            data-bs-toggle="tooltip"
+                                                            title="Hapus User"
+                                                            {{ $user->id == auth()->id() ? 'disabled' : '' }}>
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

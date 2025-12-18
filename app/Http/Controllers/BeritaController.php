@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Berita;
 use App\Models\Kategori;
+use App\Models\Media;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class BeritaController extends Controller
 {
@@ -13,23 +16,23 @@ class BeritaController extends Controller
      */
     public function index(Request $request)
     {
-        // Log akses untuk debugging: memastikan method dipanggil
+      
         \Log::info('BeritaController@index dipanggil', ['request' => $request->all()]);
-        // Kolom yang bisa di-filter
-        $filterableColumns = ['kategori_id', 'status', 'penulis'];
+    
+        $filterableColumns = ['kategori_id', 'status'];
 
-        // Kolom yang akan dipakai untuk fitur pencarian (search)
+        
         $searchableColumns = ['judul', 'isi_html', 'penulis'];
         
-        // Query dengan filter dan pagination (hindari pemanggilan scope yang gagal)
-        $beritaQuery = Berita::with('kategori');
+       
+        $beritaQuery = Berita::with('kategori', 'mediaFiles');
         foreach ($filterableColumns as $column) {
             if ($request->filled($column)) {
                 $beritaQuery->where($column, $request->input($column));
             }
         }
 
-        // Terapkan search (jika ada) menggunakan scopeSearch di model
+    
         $beritaQuery = $beritaQuery->search($request, $searchableColumns);
 
         $berita = $beritaQuery
@@ -39,21 +42,7 @@ class BeritaController extends Controller
 
         $kategori = Kategori::all();
         
-        // Dapatkan daftar penulis unik untuk dropdown filter
-        $authors = Berita::whereNotNull('penulis')
-            ->distinct()
-            ->pluck('penulis')
-            ->filter()
-            ->sort()
-            ->values();
-
-        \Log::info('BeritaController@index data', [
-            'kategori_count' => $kategori->count(),
-            'berita_count' => $berita->total(),
-            'authors_count' => $authors->count(),
-        ]);
-
-        return view('pages.berita.index', compact('berita', 'kategori', 'authors'));
+        return view('pages.berita.index', compact('berita', 'kategori'));
     }
 
     // Method lainnya tetap sama...
@@ -73,9 +62,18 @@ class BeritaController extends Controller
             'status' => 'nullable|in:draft,published',
             'terbit_at' => 'nullable|date',
             'cover' => 'nullable|string|max:255',
+            'media_files' => 'nullable|array',
+            'media_files.*' => 'file|max:10240',
+            'media_captions' => 'nullable|array',
         ]);
 
-        Berita::create($validated);
+        // Buat berita
+        $berita = Berita::create($validated);
+
+        // Handle media files upload
+        if ($request->hasFile('media_files')) {
+            $this->uploadMediaFiles($request, $berita->id);
+        }
 
         return redirect()
             ->route('berita.index')
@@ -98,9 +96,17 @@ class BeritaController extends Controller
             'status' => 'nullable|in:draft,published',
             'terbit_at' => 'nullable|date',
             'cover' => 'nullable|string|max:255',
+            'media_files' => 'nullable|array',
+            'media_files.*' => 'file|max:10240',
+            'media_captions' => 'nullable|array',
         ]);
 
         $berita->update($validated);
+
+        // Handle media files upload
+        if ($request->hasFile('media_files')) {
+            $this->uploadMediaFiles($request, $berita->id);
+        }
 
         return redirect()
             ->route('berita.index')
@@ -114,5 +120,90 @@ class BeritaController extends Controller
         return redirect()
             ->route('berita.index')
             ->with('success', 'Berita berhasil dihapus.');
+    }
+
+    /**
+     * Upload media files dan simpan ke database
+     * 
+     * @param Request $request
+     * @param int $beritaId
+     * @return void
+     */
+    private function uploadMediaFiles(Request $request, int $beritaId)
+    {
+        $files = $request->file('media_files', []);
+        $captions = $request->input('media_captions', []);
+
+        foreach ($files as $index => $file) {
+            if ($file && $file->isValid()) {
+                try {
+                    // Generate nama file unik
+                    $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+                    
+                    // Store file ke storage/media
+                    $path = $file->storeAs('media', $filename, 'public');
+                    
+                    // Dapatkan MIME type
+                    $mimeType = $file->getMimeType();
+                    
+                    // Dapatkan caption jika ada
+                    $caption = $captions[$index] ?? null;
+                    
+                    // Simpan ke tabel media
+                    Media::create([
+                        'ref_table' => 'berita',
+                        'ref_id' => $beritaId,
+                        'file_name' => $filename,
+                        'caption' => $caption,
+                        'mime_type' => $mimeType,
+                        'sort_order' => $index,
+                    ]);
+                    
+                    \Log::info('Media file uploaded successfully', [
+                        'filename' => $filename,
+                        'ref_id' => $beritaId,
+                        'mime_type' => $mimeType,
+                    ]);
+                } catch (\Exception $e) {
+                    \Log::error('Media upload error', [
+                        'error' => $e->getMessage(),
+                        'file' => $file->getClientOriginalName(),
+                    ]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Hapus media file
+     * 
+     * @param int $mediaId
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deleteMedia($mediaId)
+    {
+        try {
+            $media = Media::findOrFail($mediaId);
+            $beritaId = $media->ref_id;
+            
+            // Hapus file dari storage
+            if (Storage::disk('public')->exists('media/' . $media->file_name)) {
+                Storage::disk('public')->delete('media/' . $media->file_name);
+            }
+            
+            // Hapus record dari database
+            $media->delete();
+            
+            \Log::info('Media file deleted', ['media_id' => $mediaId, 'filename' => $media->file_name]);
+            
+            return redirect()
+                ->route('berita.edit', $beritaId)
+                ->with('success', 'File media berhasil dihapus.');
+        } catch (\Exception $e) {
+            \Log::error('Media delete error', ['error' => $e->getMessage()]);
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal menghapus file media.');
+        }
     }
 }

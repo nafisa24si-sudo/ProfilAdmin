@@ -13,19 +13,12 @@ class WargaController extends Controller
      */
     public function index()
     {
-        // Debug: cek apakah method diakses
-        \Log::info('WargaController@index diakses');
-
         // Buat data dummy jika tidak ada data
         if (Warga::count() === 0) {
-            \Log::info('Tidak ada data, membuat data dummy');
             $this->createDummyData();
         }
 
-        $wargas = Warga::orderBy('nama')->paginate(10);
-        
-        // Debug: cek data yang diambil
-        \Log::info('Data warga: ' . $wargas->count());
+        $wargas = Warga::orderBy('nama')->paginate(50);
         
         return view('pages.warga.index', compact('wargas'));
     }
@@ -150,7 +143,7 @@ class WargaController extends Controller
             $nama = $warga->nama;
             $warga->delete();
 
-            return redirect()->route('pages.warga.index')
+            return redirect()->route('warga.index')
                 ->with('success', 'Data warga ' . $nama . ' berhasil dihapus.');
 
         } catch (\Exception $e) {
