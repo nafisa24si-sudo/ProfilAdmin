@@ -56,7 +56,7 @@ class BeritaController extends Controller
     {
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
-            'kategori_id' => 'required|exists:kategoris,id',
+            'kategori_id' => 'required|exists:kategori_berita,id',
             'isi_html' => 'required',
             'penulis' => 'nullable|string|max:100',
             'status' => 'nullable|in:draft,published',
@@ -90,7 +90,7 @@ class BeritaController extends Controller
     {
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
-            'kategori_id' => 'required|exists:kategoris,id',
+            'kategori_id' => 'required|exists:kategori_berita,id',
             'isi_html' => 'required',
             'penulis' => 'nullable|string|max:100',
             'status' => 'nullable|in:draft,published',

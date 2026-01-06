@@ -44,39 +44,35 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="nama_lengkap" class="form-label fw-semibold">Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" id="nama_lengkap"
-                               class="form-control @error('nama_lengkap') is-invalid @enderror"
-                               value="{{ old('nama_lengkap') }}" placeholder="Masukkan nama lengkap">
-                        @error('nama_lengkap')
+                        <label for="name" class="form-label fw-semibold">Nama Lengkap</label>
+                        <input type="text" name="name" id="name"
+                               class="form-control @error('name') is-invalid @enderror"
+                               value="{{ old('name') }}" placeholder="Masukkan nama lengkap">
+                        @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="level_akses" class="form-label fw-semibold">Level Akses</label>
-                        <select name="level_akses" id="level_akses"
-                                class="form-select @error('level_akses') is-invalid @enderror">
-                            <option value="">Pilih level akses</option>
-                            <option value="admin" {{ old('level_akses') == 'admin' ? 'selected' : '' }}>Admin</option>
-                            <option value="petugas" {{ old('level_akses') == 'petugas' ? 'selected' : '' }}>Petugas</option>
-                            <option value="ketua_rt" {{ old('level_akses') == 'ketua_rt' ? 'selected' : '' }}>Ketua RT</option>
-                            <option value="warga" {{ old('level_akses') == 'warga' ? 'selected' : '' }}>Warga</option>
-                        </select>
-                        @error('level_akses')
+                        <label for="email" class="form-label fw-semibold">Email</label>
+                        <input type="email" name="email" id="email"
+                               class="form-control @error('email') is-invalid @enderror"
+                               value="{{ old('email') }}" placeholder="Masukkan email">
+                        @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="status" class="form-label fw-semibold">Status</label>
-                        <select name="status" id="status"
-                                class="form-select @error('status') is-invalid @enderror">
-                            <option value="">Pilih status</option>
-                            <option value="aktif" {{ old('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
-                            <option value="non-aktif" {{ old('status') == 'non-aktif' ? 'selected' : '' }}>Non-aktif</option>
+                        <label for="role" class="form-label fw-semibold">Role</label>
+                        <select name="role" id="role"
+                                class="form-select @error('role') is-invalid @enderror">
+                            <option value="">Pilih role</option>
+                            <option value="super_admin" {{ old('role') == 'super_admin' ? 'selected' : '' }}>Super Admin</option>
+                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="petugas" {{ old('role') == 'petugas' ? 'selected' : '' }}>Petugas</option>
                         </select>
-                        @error('status')
+                        @error('role')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

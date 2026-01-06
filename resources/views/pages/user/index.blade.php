@@ -46,10 +46,9 @@
                             <thead class="table-light">
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th>Username</th>
-                                    <th>Nama Lengkap</th>
-                                    <th>Level Akses</th>
-                                    <th>Status</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
                                     <th class="text-center" style="width: 120px;">Aksi</th>
                                 </tr>
                             </thead>
@@ -57,24 +56,18 @@
                                 @foreach($users as $index => $user)
                                     <tr>
                                         <td>{{ $users->firstItem() + $index }}</td>
-                                        <td class="fw-semibold text-dark">{{ $user->username }}</td>
-                                        <td>{{ $user->nama_lengkap }}</td>
+                                        <td class="fw-semibold text-dark">{{ $user->name }}</td>
+                                        <td>{{ $user->email }}</td>
                                         <td>
                                             @php
                                                 $badgeColors = [
-                                                    'admin' => 'danger',
-                                                    'petugas' => 'warning',
-                                                    'ketua_rt' => 'info',
-                                                    'warga' => 'secondary'
+                                                    'super_admin' => 'danger',
+                                                    'admin' => 'warning', 
+                                                    'petugas' => 'info'
                                                 ];
                                             @endphp
-                                            <span class="badge bg-{{ $badgeColors[$user->level_akses] ?? 'secondary' }}">
-                                                {{ ucfirst(str_replace('_', ' ', $user->level_akses)) }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-{{ $user->status == 'aktif' ? 'success' : 'secondary' }}">
-                                                {{ ucfirst($user->status) }}
+                                            <span class="badge bg-{{ $badgeColors[$user->role] ?? 'secondary' }}">
+                                                {{ ucfirst(str_replace('_', ' ', $user->role)) }}
                                             </span>
                                         </td>
                                         <td class="text-center">

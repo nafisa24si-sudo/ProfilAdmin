@@ -41,7 +41,7 @@
                     <tbody>
                         @foreach($agendas as $agenda)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ ($agendas->currentPage() - 1) * $agendas->perPage() + $loop->iteration }}</td>
                             <td>{{ $agenda->judul }}</td>
                             <td>{{ $agenda->lokasi }}</td>
                             <td>

@@ -114,12 +114,12 @@
         .login-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border-radius: 25px;
+            border-radius: 20px;
             box-shadow: 
-                0 25px 50px rgba(0, 0, 0, 0.15),
+                0 20px 40px rgba(0, 0, 0, 0.12),
                 0 0 0 1px rgba(255, 255, 255, 0.2);
             overflow: hidden;
-            max-width: 1100px;
+            max-width: 900px;
             width: 100%;
             position: relative;
         }
@@ -138,10 +138,10 @@
         .login-left {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 4rem 3rem;
+            padding: 2.5rem 2rem;
             position: relative;
             overflow: hidden;
-            min-height: 600px;
+            min-height: 420px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -198,12 +198,12 @@
         
         .village-illustration {
             width: 100%;
-            height: 180px;
-            border-radius: 20px;
-            margin: 2rem 0;
+            height: 140px;
+            border-radius: 15px;
+            margin: 1.5rem 0;
             overflow: hidden;
             border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
         }
         
         .village-image {
@@ -247,14 +247,14 @@
         
         /* Right Panel */
         .login-right {
-            padding: 4rem 3rem;
+            padding: 2.5rem 2rem;
             background: white;
             position: relative;
         }
         
         .login-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
         
         .login-title {
@@ -459,7 +459,7 @@
     <div class="login-container">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-11">
+                <div class="col-lg-9">
                     <div class="login-card">
                         <div class="row g-0">
                             <!-- Left Panel - Identitas Sistem -->
@@ -468,7 +468,7 @@
                                     <!-- Logo Horizontal -->
                                     <div class="text-center mb-4">
                                         <img src="{{ asset('images/logo-desa.png') }}" 
-                                             alt="Logo Desa" style="width: 180px; height: 180px; object-fit: contain;">
+                                             alt="Logo Desa" style="width: 120px; height: 120px; object-fit: contain;">
                                         <h6 class="fw-light mt-3 opacity-90">Panel Admin</h6>
                                     </div>
                                     <p class="mb-0 opacity-75" style="font-size: 0.85rem;">Sistem Informasi Desa Terpadu untuk Digitalisasi Administrasi Desa</p>

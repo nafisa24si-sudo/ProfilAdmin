@@ -34,7 +34,18 @@
                     <div class="mb-3">
                         <label for="foto" class="form-label">Foto</label>
                         <div class="mb-2">
-                            <img src="{{ Storage::url($galeri->foto) }}" class="img-thumbnail" style="max-height: 200px;" alt="Current photo">
+                            @php $publicPath = public_path('storage/' . ($galeri->foto ?? '')); @endphp
+                            @if(!empty($galeri->foto) && file_exists($publicPath))
+                                <img src="{{ Storage::url($galeri->foto) }}" class="img-thumbnail" style="max-height: 200px;" alt="Current photo">
+                            @else
+                                <div class="bg-light d-flex align-items-center justify-content-center" style="height:200px; width:100%;">
+                                    <span class="text-muted">No image</span>
+                                </div>
+                            @endif
+                            <div class="mt-2 text-start">
+                                <small class="text-muted">Debug: stored path = <code>{{ $galeri->foto }}</code></small><br>
+                                <small class="text-muted">File exists in public/storage: <strong>{{ file_exists($publicPath) ? 'yes' : 'no' }}</strong></small>
+                            </div>
                         </div>
                         <input type="file" name="foto" id="foto" 
                                class="form-control @error('foto') is-invalid @enderror"

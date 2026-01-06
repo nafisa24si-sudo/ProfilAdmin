@@ -22,7 +22,7 @@
             <!-- Logo dan Brand -->
             <div class="logo-container">
                 <img src="{{ asset('images/logo_desa.png') }}" alt="Logo Desa" class="logo">
-                <div class="brand-name">DESA MANDIRI</div>
+                <div class="brand-name">SiDesa</div>
                 <div class="brand-tagline">Membangun Desa Digital</div>
             </div>
 

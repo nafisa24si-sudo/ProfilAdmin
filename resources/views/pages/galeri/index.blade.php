@@ -27,7 +27,16 @@
         @foreach($galeris as $galeri)
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card h-100">
-                <img src="{{ Storage::url($galeri->foto) }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ $galeri->judul }}">
+                @php
+                    $publicPath = public_path('storage/' . ($galeri->foto ?? ''));
+                @endphp
+                @if(!empty($galeri->foto) && file_exists($publicPath))
+                    <img src="{{ Storage::url($galeri->foto) }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ $galeri->judul }}">
+                @else
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height:200px;">
+                        <span class="text-muted">No image</span>
+                    </div>
+                @endif
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ $galeri->judul }}</h5>
                     <p class="card-text flex-grow-1">{{ Str::limit($galeri->deskripsi, 100) }}</p>
@@ -72,7 +81,7 @@
     </div>
     
     <div class="d-flex justify-content-center">
-        {{ $galeris->links() }}
+        {{-- Pagination removed for debugging --}}
     </div>
 @else
     <div class="card">

@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Galeri;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
 
 class GaleriController extends Controller
 {
     public function index()
     {
-        $galeris = Galeri::orderBy('created_at', 'desc')->paginate(50);
+        $galeris = Galeri::all();
         return view('pages.galeri.index', compact('galeris'));
     }
 
@@ -27,11 +29,17 @@ class GaleriController extends Controller
             'foto' => 'required|image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
-        $validated['foto'] = $request->file('foto')->store('galeri-photos', 'public');
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto')->store('galeri-photos', 'public');
+        }
 
-        Galeri::create($validated);
-
-        return redirect()->route('galeri.index')->with('success', 'Foto berhasil ditambahkan ke galeri.');
+        try {
+            Galeri::create($validated);
+            return redirect()->route('galeri.index')->with('success', 'Foto berhasil ditambahkan ke galeri.');
+        } catch (\Exception $e) {
+            Log::error('Galeri store error: ' . $e->getMessage(), ['validated' => $validated]);
+            return back()->with('error', 'Gagal menambahkan foto. Error: ' . $e->getMessage())->withInput();
+        }
     }
 
     public function show(Galeri $galeri)
@@ -53,18 +61,30 @@ class GaleriController extends Controller
         ]);
 
         if ($request->hasFile('foto')) {
-            Storage::disk('public')->delete($galeri->foto);
+            if (!empty($galeri->foto) && Storage::disk('public')->exists($galeri->foto)) {
+                Storage::disk('public')->delete($galeri->foto);
+            }
             $validated['foto'] = $request->file('foto')->store('galeri-photos', 'public');
         }
 
-        $galeri->update($validated);
+        // Filter validated to actual DB columns
+        $cols = Schema::getColumnListing('galeri');
+        $validated = array_intersect_key($validated, array_flip($cols));
 
-        return redirect()->route('galeri.index')->with('success', 'Galeri berhasil diperbarui.');
+        try {
+            $galeri->update($validated);
+            return redirect()->route('galeri.index')->with('success', 'Galeri berhasil diperbarui.');
+        } catch (\Exception $e) {
+            Log::error('Galeri update error: ' . $e->getMessage(), ['galeri_id' => $galeri->galeri_id, 'validated' => $validated]);
+            return back()->with('error', 'Gagal memperbarui galeri. Periksa log.')->withInput();
+        }
     }
 
     public function destroy(Galeri $galeri)
     {
-        Storage::disk('public')->delete($galeri->foto);
+        if (!empty($galeri->foto) && Storage::disk('public')->exists($galeri->foto)) {
+            Storage::disk('public')->delete($galeri->foto);
+        }
         $galeri->delete();
 
         return redirect()->route('galeri.index')->with('success', 'Foto berhasil dihapus dari galeri.');

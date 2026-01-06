@@ -19,7 +19,21 @@
                 </div>
             </div>
             <div class="card-body text-center">
-                <img src="{{ Storage::url($galeri->foto) }}" class="img-fluid rounded mb-3" alt="{{ $galeri->judul }}" style="max-height: 500px;">
+                @php
+                    $publicPath = public_path('storage/' . ($galeri->foto ?? ''));
+                @endphp
+                @if(!empty($galeri->foto) && file_exists($publicPath))
+                    <img src="{{ Storage::url($galeri->foto) }}" class="img-fluid rounded mb-3" alt="{{ $galeri->judul }}" style="max-height: 500px;">
+                @else
+                    <div class="bg-light d-flex align-items-center justify-content-center rounded mb-3" style="height:300px;">
+                        <span class="text-muted">No image available</span>
+                    </div>
+                @endif
+
+                <div class="text-start mt-2">
+                    <small class="text-muted">Debug: stored path = <code>{{ $galeri->foto }}</code></small><br>
+                    <small class="text-muted">File exists in public/storage: <strong>{{ file_exists($publicPath) ? 'yes' : 'no' }}</strong></small>
+                </div>
                 
                 <div class="mt-4">
                     <h6><strong>Deskripsi:</strong></h6>

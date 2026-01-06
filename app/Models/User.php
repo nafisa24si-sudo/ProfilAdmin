@@ -10,6 +10,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected $table = 'user';
+
     /**
      * Kolom yang boleh diisi secara mass-assignment.
      */
@@ -50,10 +52,28 @@ class User extends Authenticatable
     }
 
     /**
-     * Helper cepat cek admin
+     * Helper cek role
      */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super_admin';
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    public function isPetugas(): bool
+    {
+        return $this->role === 'petugas';
+    }
+
+    public function hasRole($roles): bool
+    {
+        if (is_string($roles)) {
+            return $this->role === $roles;
+        }
+        return in_array($this->role, $roles);
     }
 }

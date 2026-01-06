@@ -61,7 +61,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // Gunakan Laravel Auth::attempt untuk keamanan yang lebih baik
+       
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             

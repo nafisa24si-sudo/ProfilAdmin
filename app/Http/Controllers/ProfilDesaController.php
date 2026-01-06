@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ProfilDesa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Log;
 
 class ProfilDesaController extends Controller
 {
@@ -31,11 +33,19 @@ class ProfilDesaController extends Controller
             'peta_embed_url' => 'nullable|string',
         ]);
 
-        // Hapus data lama agar hanya 1 profil
-        ProfilDesa::truncate();
-        ProfilDesa::create($validated);
+        // Hanya simpan kolom yang benar-benar ada di tabel database
+        $cols = Schema::getColumnListing('profil_desa');
+        $validated = array_intersect_key($validated, array_flip($cols));
 
-        return redirect()->route('profil.index')->with('success', 'Profil desa berhasil disimpan.');
+        try {
+            // Hapus data lama agar hanya 1 profil
+            ProfilDesa::truncate();
+            ProfilDesa::create($validated);
+            return redirect()->route('profil.index')->with('success', 'Profil desa berhasil disimpan.');
+        } catch (\Exception $e) {
+            Log::error('ProfilDesa store error: ' . $e->getMessage(), ['validated' => $validated]);
+            return back()->with('error', 'Gagal menyimpan profil desa. Periksa log untuk detail.')->withInput();
+        }
     }
 
     public function edit($id)
@@ -56,11 +66,18 @@ class ProfilDesaController extends Controller
             'misi' => 'nullable|string',
             'peta_embed_url' => 'nullable|string',
         ]);
+        // Filter validated keys supaya hanya kolom yang ada di DB yang diupdate
+        $cols = Schema::getColumnListing('profil_desa');
+        $validated = array_intersect_key($validated, array_flip($cols));
 
-        $profil = ProfilDesa::findOrFail($id);
-        $profil->update($validated);
-
-        return redirect()->route('pages.profil.index')->with('success', 'Profil desa berhasil diperbarui.');
+        try {
+            $profil = ProfilDesa::findOrFail($id);
+            $profil->update($validated);
+            return redirect()->route('profil.index')->with('success', 'Profil desa berhasil diperbarui.');
+        } catch (\Exception $e) {
+            Log::error('ProfilDesa update error: ' . $e->getMessage(), ['id' => $id, 'validated' => $validated]);
+            return back()->with('error', 'Gagal memperbarui profil desa. Periksa log untuk detail.')->withInput();
+        }
     }
 
     public function destroy($id)
@@ -68,6 +85,6 @@ class ProfilDesaController extends Controller
         $profil = ProfilDesa::findOrFail($id);
         $profil->delete();
 
-        return redirect()->route('pages.profil.index')->with('success', 'Profil desa berhasil dihapus.');
+        return redirect()->route('profil.index')->with('success', 'Profil desa berhasil dihapus.');
     }
 }

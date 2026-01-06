@@ -9,6 +9,7 @@ class Galeri extends Model
 {
     use HasFactory;
     
+    protected $table = 'galeri';
     protected $primaryKey = 'galeri_id';
     
     protected $fillable = [
@@ -16,4 +17,9 @@ class Galeri extends Model
         'deskripsi',
         'foto'
     ];
+    
+    public function getRouteKeyName()
+    {
+        return 'galeri_id';
+    }
 }

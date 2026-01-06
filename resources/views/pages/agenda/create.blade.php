@@ -10,6 +10,15 @@
             <div class="card-body">
                 <form action="{{ route('agenda.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    @if($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     
                     <div class="mb-3">
                         <label for="judul" class="form-label">Judul Agenda</label>

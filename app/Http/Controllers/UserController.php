@@ -30,7 +30,7 @@ class UserController extends Controller
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:admin,user,warga'
+            'role' => 'required|in:super_admin,admin,petugas'
         ]);
 
         $validated['password'] = bcrypt($validated['password']);
@@ -56,7 +56,7 @@ class UserController extends Controller
             'username' => 'required|string|max:50|unique:users,username,' . $user->id,
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'role' => 'required|in:admin,user,warga'
+            'role' => 'required|in:super_admin,admin,petugas'
         ]);
 
         $user->update($validated);
@@ -70,6 +70,11 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('user.index')
             ->with('success', 'User berhasil dihapus!');
+    }
+
+    public function avatar()
+    {
+        return view('pages.user.avatar');
     }
 
     public function showAvatarForm()

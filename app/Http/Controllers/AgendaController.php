@@ -10,7 +10,7 @@ class AgendaController extends Controller
 {
     public function index()
     {
-        $agendas = Agenda::orderBy('tanggal_mulai', 'desc')->paginate(50);
+        $agendas = Agenda::orderBy('tanggal_mulai', 'desc')->paginate(12);
         return view('pages.agenda.index', compact('agendas'));
     }
 

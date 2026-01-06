@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('beritas', function (Blueprint $table) {
+        Schema::create('berita', function (Blueprint $table) {
             $table->id();
             $table->string('judul');
             $table->string('slug')->unique();
-            $table->foreignId('kategori_id')->constrained('kategoris')->onDelete('cascade');
+            $table->foreignId('kategori_id')->constrained('kategori_berita')->onDelete('cascade');
             $table->text('isi_html');
             $table->string('penulis')->nullable();
             $table->enum('status', ['draft', 'published'])->default('draft');
@@ -23,6 +23,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('beritas');
+        Schema::dropIfExists('berita');
     }
 };

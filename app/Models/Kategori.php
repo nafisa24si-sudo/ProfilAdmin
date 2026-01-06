@@ -10,6 +10,8 @@ class Kategori extends Model
 {
     use HasFactory;
 
+    protected $table = 'kategori_berita';
+
     protected $fillable = ['nama', 'slug', 'deskripsi'];
 
     // Otomatis buat slug dari nama

@@ -27,21 +27,14 @@ Route::middleware(['guest'])->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout.get');
 
-/*
-|--------------------------------------------------------------------------
-| SEMUA ROUTE YANG PERLU LOGIN (Protected)
-|--------------------------------------------------------------------------
-*/
+
 Route::middleware(['auth'])->group(function () {
     
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    /*
-    |--------------------------------------------------------------------------
-    | PROFIL DESA (Sekarang bisa diakses semua user yang login)
-    |--------------------------------------------------------------------------
-    */
+
+    
     Route::get('/profil', [ProfilDesaController::class, 'index'])->name('profil.index');
     Route::get('/profil/create', [ProfilDesaController::class, 'create'])->name('profil.create');
     Route::post('/profil/store', [ProfilDesaController::class, 'store'])->name('profil.store');
@@ -97,8 +90,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/{user}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
-    Route::get('/avatar', [UserController::class, 'showAvatarForm'])->name('user.avatar');
-    Route::post('/avatar/upload', [UserController::class, 'uploadAvatar'])->name('user.avatar.upload');
+    Route::get('/user/avatar', [UserController::class, 'avatar'])->name('user.avatar');
+    Route::post('/user/avatar', [UserController::class, 'uploadAvatar'])->name('user.avatar.upload');
 
     /*
     |--------------------------------------------------------------------------
