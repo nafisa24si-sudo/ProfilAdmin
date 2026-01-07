@@ -79,9 +79,14 @@
         </div>
         @endforeach
     </div>
-    
-    <div class="d-flex justify-content-center">
-        {{-- Pagination removed for debugging --}}
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <div class="text-muted small">
+            Menampilkan <strong>{{ $galeris->firstItem() ?? 0 }} - {{ $galeris->lastItem() ?? 0 }}</strong> dari <strong>{{ $galeris->total() }}</strong> foto
+        </div>
+        <div>
+            {{ $galeris->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 @else
     <div class="card">

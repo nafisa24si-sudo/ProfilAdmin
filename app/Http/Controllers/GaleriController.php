@@ -12,7 +12,8 @@ class GaleriController extends Controller
 {
     public function index()
     {
-        $galeris = Galeri::all();
+        $primary = (new Galeri())->getKeyName();
+        $galeris = Galeri::orderBy($primary, 'desc')->paginate(12);
         return view('pages.galeri.index', compact('galeris'));
     }
 
@@ -30,7 +31,16 @@ class GaleriController extends Controller
         ]);
 
         if ($request->hasFile('foto')) {
+            // Logging upload info
+            try {
+                $file = $request->file('foto');
+                Log::info('Galeri upload attempt', ['name' => $file->getClientOriginalName(), 'size' => $file->getSize()]);
+            } catch (\Throwable $e) {
+                Log::warning('Galeri upload: failed to read file info: ' . $e->getMessage());
+            }
+
             $validated['foto'] = $request->file('foto')->store('galeri-photos', 'public');
+            Log::info('Galeri file stored', ['path' => $validated['foto']]);
         }
 
         try {

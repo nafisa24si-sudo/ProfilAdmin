@@ -134,16 +134,22 @@
 <!-- News Grid -->
 @if($berita->count() > 0)
 <div class="row g-4 mb-4">
+    @php
+        $statusLabels = [
+            'published' => 'Terbit',
+            'draft' => 'Draf',
+        ];
+    @endphp
     @foreach ($berita as $item)
     <div class="col-lg-4 col-md-6">
         <div class="news-card card h-100 position-relative">
             <!-- Status Badge -->
-            <div class="status-badge">
-                <span class="badge rounded-pill bg-{{ $item->status == 'published' ? 'success' : 'warning' }} shadow">
-                    <i class="bi bi-{{ $item->status == 'published' ? 'check-circle' : 'clock' }} me-1"></i>
-                    {{ ucfirst($item->status) }}
-                </span>
-            </div>
+                    <div class="status-badge">
+                        <span class="badge rounded-pill bg-{{ $item->status == 'published' ? 'success' : 'warning' }} shadow">
+                            <i class="bi bi-{{ $item->status == 'published' ? 'check-circle' : 'clock' }} me-1"></i>
+                            {{ $statusLabels[$item->status] ?? ucfirst($item->status) }}
+                        </span>
+                    </div>
             
             <!-- Image -->
             <div class="news-image">

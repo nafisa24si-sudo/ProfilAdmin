@@ -34,8 +34,7 @@ class KategoriSeeder extends Seeder
 
         // Kita loop array di atas agar datanya pasti sesuai keinginan
         foreach ($daftarKategori as $nama) {
-            
-            DB::table('kategoris')->insert([
+            DB::table('kategori_berita')->insert([
                 'nama'      => $nama,
                 'slug'      => Str::slug($nama), // Contoh: 'layanan-masyarakat'
                 // Membuat deskripsi random bahasa Indonesia yang relevan

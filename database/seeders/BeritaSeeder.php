@@ -7,6 +7,7 @@ use App\Models\Kategori;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class BeritaSeeder extends Seeder
 {
@@ -28,17 +29,21 @@ class BeritaSeeder extends Seeder
             ];
 
             foreach ($defaultKategori as $k) {
-                Kategori::create($k);
+                $k['slug'] = Str::slug($k['nama']);
+                try {
+                    Kategori::create($k);
+                } catch (\Exception $e) {
+                    Log::error('Gagal membuat kategori default: ' . $e->getMessage());
+                }
             }
 
             $kategoriIds = Kategori::pluck('id')->toArray();
             $this->command->info('Kategori default berhasil dibuat.');
         }
 
-        $this->command->info('Membuat 150 data berita dummy...');
+    $this->command->info('Membuat 100 data berita dummy...');
 
-   
-        for ($i = 0; $i < 150; $i++) {
+    for ($i = 0; $i < 100; $i++) {
 
             $isiBerita = '';
             foreach ($faker->paragraphs(rand(3, 4)) as $paragraf) {
@@ -84,7 +89,7 @@ class BeritaSeeder extends Seeder
             }
         }
 
-        $this->command->info('Sukses membuat 150 data berita dummy!');
+        $this->command->info('Sukses membuat 100 data berita dummy!');
     }
 
     /**
