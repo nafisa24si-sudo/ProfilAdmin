@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -91,6 +92,12 @@ class UserController extends Controller
         $user = Auth::user();
         
         if ($request->hasFile('avatar')) {
+            try {
+                $file = $request->file('avatar');
+                Log::info('Avatar upload attempt', ['user_id' => $user->id, 'name' => $file->getClientOriginalName(), 'size' => $file->getSize()]);
+            } catch (\Throwable $e) {
+                Log::warning('Avatar upload: failed to read file info: ' . $e->getMessage());
+            }
             // Hapus avatar lama jika ada
             if ($user->avatar && file_exists(public_path('images/profiles/' . $user->avatar))) {
                 unlink(public_path('images/profiles/' . $user->avatar));
@@ -100,6 +107,7 @@ class UserController extends Controller
             $file = $request->file('avatar');
             $filename = time() . '_' . $user->id . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('images/profiles'), $filename);
+            Log::info('Avatar file moved', ['user_id' => $user->id, 'filename' => $filename]);
 
             // Update database
             $user->update(['avatar' => $filename]);

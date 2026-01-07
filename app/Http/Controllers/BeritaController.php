@@ -33,7 +33,7 @@ class BeritaController extends Controller
 
         $berita = $query
             ->latest()
-            ->paginate(10)
+            ->paginate(12)
             ->withQueryString();
 
         $kategori = Kategori::all();
@@ -98,7 +98,7 @@ class BeritaController extends Controller
     public function edit(Berita $berita)
     {
         $kategori = Kategori::all();
-        return view('pages.berita.edit', compact('berita', 'kategori'));
+        return view('pages.berita.form', compact('berita', 'kategori'));
     }
 
     /**
