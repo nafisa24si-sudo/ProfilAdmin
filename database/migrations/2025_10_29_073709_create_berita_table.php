@@ -8,17 +8,18 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('berita', function (Blueprint $table) {
-            $table->id();
-            $table->string('judul');
-            $table->string('slug')->unique();
-            $table->foreignId('kategori_id')->constrained('kategori_berita')->onDelete('cascade');
-            $table->text('isi_html');
-            $table->string('penulis')->nullable();
-            $table->enum('status', ['draft', 'published'])->default('draft');
-            $table->timestamp('terbit_at')->nullable();
-            $table->string('cover')->nullable();
-            $table->timestamps();
-        });
+    $table->id();
+    $table->string('judul');
+    $table->string('slug')->unique(); // 🔥 WAJIB
+    $table->foreignId('kategori_id')->constrained('kategori_berita')->cascadeOnDelete();
+    $table->longText('isi_html');
+    $table->string('penulis')->nullable();
+    $table->enum('status', ['draft', 'published'])->default('draft');
+    $table->timestamp('terbit_at')->nullable();
+    $table->string('cover')->nullable();
+    $table->timestamps();
+});
+
     }
 
     public function down(): void

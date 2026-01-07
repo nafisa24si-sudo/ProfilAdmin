@@ -10,7 +10,7 @@ use App\Models\User;
 class AuthController extends Controller
 {
     /**
-     * Tampilkan halaman login
+     * Halaman login
      */
     public function showLogin()
     {
@@ -18,7 +18,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Tampilkan halaman register
+     * Halaman register
      */
     public function showRegister()
     {
@@ -26,49 +26,43 @@ class AuthController extends Controller
     }
 
     /**
-     * Proses registrasi user baru
+     * Proses register
      */
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:6|confirmed',
         ]);
 
-        // Simpan user baru
         $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'user',
+            'role'     => 'user',
         ]);
 
-        // Login otomatis setelah registrasi
         Auth::login($user);
 
         return redirect()->route('dashboard')
-            ->with('success', 'Registrasi berhasil! Selamat datang, ' . $user->name);
+            ->with('success', 'Registrasi berhasil!');
     }
 
     /**
-     * Proses login user
+     * Proses login
      */
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required',
         ]);
 
-       
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
-            // Simpan waktu login terakhir
-            session(['last_login' => now()]);
-            
-            return redirect()->route('dashboard')->with('success', 'Login berhasil!');
+            return redirect()->route('dashboard')
+                ->with('success', 'Login berhasil!');
         }
 
         return back()->withErrors([
@@ -77,14 +71,16 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout user
+     * Logout
      */
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Berhasil logout.');
+        return redirect()->route('login')
+            ->with('success', 'Berhasil logout.');
     }
 }

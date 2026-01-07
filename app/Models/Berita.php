@@ -2,11 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Model;
 
 class Berita extends Model
 {
@@ -16,62 +13,40 @@ class Berita extends Model
 
     protected $fillable = [
         'judul',
+        'slug',
         'kategori_id',
         'isi_html',
         'penulis',
         'status',
         'terbit_at',
-        'cover'
+        'cover',
     ];
 
-    protected $casts = [
-        'terbit_at' => 'datetime'
-    ];
-
-    // Relationship dengan kategori
-    public function kategori(): BelongsTo
+    public function kategori()
     {
-        return $this->belongsTo(Kategori::class);
+        return $this->belongsTo(Kategori::class, 'kategori_id');
     }
 
-    /**
-     * Relationship dengan media files
-     * Dapatkan semua file media yang terkait dengan berita ini
-     */
-    public function mediaFiles(): HasMany
+    public function mediaFiles()
     {
         return $this->hasMany(Media::class, 'ref_id')
-                    ->where('ref_table', 'berita')
-                    ->orderBy('sort_order', 'asc');
-    }
-
-    // Scope untuk filter
-    public function scopeFilter(Builder $query, $request, array $filterableColumns): Builder
-    {
-        foreach ($filterableColumns as $column) {
-            if ($request->filled($column)) {
-                $query->where($column, $request->input($column));
-            }
-        }
-        return $query;
+            ->where('ref_table', 'berita')
+            ->orderBy('sort_order');
     }
 
     /**
-     * Scope untuk search pada beberapa kolom.
-     * Pemanggilan: ->search($request, ['judul','isi_html','penulis'])
+     * Scope search (yang kamu pakai di index)
      */
-    public function scopeSearch(Builder $query, $request, array $columns): Builder
+    public function scopeSearch($query, $request, array $columns)
     {
-        if (!$request->filled('search')) {
-            return $query;
+        if ($request->filled('search')) {
+            $query->where(function ($q) use ($request, $columns) {
+                foreach ($columns as $column) {
+                    $q->orWhere($column, 'like', '%' . $request->search . '%');
+                }
+            });
         }
 
-        $term = $request->input('search');
-
-        return $query->where(function (Builder $q) use ($columns, $term) {
-            foreach ($columns as $col) {
-                $q->orWhere($col, 'like', '%' . $term . '%');
-            }
-        });
+        return $query;
     }
 }
